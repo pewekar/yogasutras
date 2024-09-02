@@ -1,0 +1,1929 @@
+<code><!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Yoga Sutras</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                height: auto;
+                margin: 0;
+                padding: 10px;
+                overflow-x: hidden;
+            }
+
+            .chapter-accordion {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+            }
+
+            .chapter-container {
+                background-color: #f4f4f4;
+                border: 1px solid #ccc;
+                cursor: pointer;
+                margin: 5px;
+                padding: 10px;
+                flex: 1;
+                min-width: 80px;
+                text-align: center;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                border-radius: 5px;
+                position: relative; /* To ensure absolute positioning of dropdown is relative to this container */
+            }
+
+            .scrollable-list {
+                display: none; /* Hidden by default */
+                max-height: 150px;
+                overflow-y: auto;
+                border: 1px solid #ccc;
+                background-color: #fff;
+                margin-top: 5px;
+                position: absolute;
+                top: 100%; /* Start below the chapter container */
+                left: 0;
+                right: 0;
+                z-index: 100;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                border-radius: 5px;
+                padding: 5px;
+                text-align: left;
+            }
+
+            .sutra-display {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .sutra-verse-original {
+                display: inline-flex;
+                align-items: center;
+                font-size: 1.5em;
+                font-weight: bold;
+                background-color: #f9f9f9;
+                padding: 10px;
+                margin: 0;
+                width: 100%;
+                box-sizing: border-box;
+                text-align: left;
+            }
+
+            .sutra-verse {
+                margin-right: 10px;
+            }
+
+            .sutra-details {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .sutra-row {
+                padding: 10px;
+                margin: 0;
+                box-sizing: border-box;
+                width: 100%;
+            }
+
+            .sutra-row.even {
+                background-color: #e6f7ff; /* Light blue for even rows */
+            }
+
+            .sutra-row.odd {
+                background-color: #f9f9f9; /* Light grey for odd rows */
+            }
+
+            .navigation-buttons {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px 0;
+                margin-top: 20px;
+                flex-wrap: nowrap; /* Ensure buttons stay in one line */
+            }
+
+            .navigation-buttons button {
+                background-color: #f4f4f4;
+                border: 1px solid #ccc;
+                padding: 10px 20px;
+                font-size: 1em;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                flex: 1;
+                margin: 5px;
+            }
+
+            .navigation-buttons button:hover {
+                background-color: #ddd;
+            }
+
+            .navigation-buttons button:disabled {
+                background-color: #eee;
+                cursor: not-allowed;
+            }
+            /* Mobile-specific adjustments */
+
+            /* Show the accordion on larger screens */
+                @media (min-width: 601px) {
+                    .chapter-accordion {
+                        display: flex; /* Ensure the accordion is displayed on laptops */
+                    }
+                }
+
+                /* Mobile-specific adjustments */
+                @media (max-width: 600px) {
+                    .chapter-accordion {
+                        display: none; /* Hide chapter accordion on mobile */
+                    }
+
+                .mobile-heading {
+                    display: block; /* Show heading on mobile */
+                    font-size: 1.5em;
+                    font-weight: bold;
+                    text-align: center; /* Center the heading */
+                    margin: 20px auto; /* Center the heading with auto margin */
+                }
+
+                .navigation-buttons {
+                    flex-direction: row; /* Keep navigation buttons horizontal */
+                    flex-wrap: nowrap;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="main-content">
+            <!-- Heading for Mobile Devices -->
+            <h1 class="mobile-heading">पातञ्जलयोगसूत्राणि</h1>
+            
+            <!-- Chapter Accordion (Hidden on Mobile) -->
+            <div class="chapter-accordion">
+                <div class="chapter-container" onclick="toggleChapter(1)">
+                    <div class="chapter-title">Chapter 1</div>
+                    <div class="scrollable-list" id="sutra-list-1">
+                        <!-- Sutra list items for Chapter 1 -->
+                    </div>
+                </div>
+                <div class="chapter-container" onclick="toggleChapter(2)">
+                    <div class="chapter-title">Chapter 2</div>
+                    <div class="scrollable-list" id="sutra-list-2">
+                        <!-- Sutra list items for Chapter 2 -->
+                    </div>
+                </div>
+                <div class="chapter-container" onclick="toggleChapter(3)">
+                    <div class="chapter-title">Chapter 3</div>
+                    <div class="scrollable-list" id="sutra-list-3">
+                        <!-- Sutra list items for Chapter 3 -->
+                    </div>
+                </div>
+                <div class="chapter-container" onclick="toggleChapter(4)">
+                    <div class="chapter-title">Chapter 4</div>
+                    <div class="scrollable-list" id="sutra-list-4">
+                        <!-- Sutra list items for Chapter 4 -->
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Combined Verse Display with Verse Number and Text -->
+            <div class="sutra-display">
+                <p id="sutra-verse-original" class="sutra-verse-original">
+                    <span id="sutra-verse" class="sutra-verse"></span> <!-- Verse Number -->
+                    <span id="sutra-original" class="sutra-original"></span> <!-- Original Text -->
+                </p>
+            </div>
+        
+            <!-- Other sutra details with alternate row shading -->
+            <div class="sutra-details">
+                <p class="sutra-row even" id="sutra-sanskrit-simplified"></p>
+                <p class="sutra-row odd" id="sutra-chitta"></p>
+                <p class="sutra-row even" id="sutra-english"></p>
+                <p class="sutra-row odd" id="sutra-red"></p>
+            </div>
+        
+            <!-- Navigation Buttons -->
+            <div class="navigation-buttons">
+                <button id="prev-chapter" onclick="navigateChapter('prev')"><<</button>
+                <button id="prev-sutra" onclick="navigateSutra('prev')"><</button>
+                <button id="next-sutra" onclick="navigateSutra('next')">></button>
+                <button id="next-chapter" onclick="navigateChapter('next')">>></button>
+            </div>
+        </div>
+
+
+        <script>
+            const sutras = {
+                1: [
+                    // Add sutras for Chapter 1 here
+               {
+                   verse: '1.1',
+                   original: 'अथ योगानुशासनम्',
+                   sanskritSimplified: 'अथ (atha) + योग (yoga) + अनुशासनम् (anuśāsanam)',
+                   chitta: 'Now, the discipline of yoga',
+                   english: 'Now, the teaching of yoga begins.',
+                   red: 'Now (atha), the discipline (anuśāsanam) of yoga (yogaḥ)'
+               },
+               {
+                verse: '1.2',
+                original: 'योगश्चित्तवृत्तिनिरोधः',
+                sanskritSimplified: 'योग (yoga) + चित्त (citta) + वृत्ति (vṛtti) + निरोधः (nirodhaḥ)',
+                chitta: 'Yoga ceases the fluctuations of the mind',
+                english: 'Yoga is the cessation of the modifications of the mind',
+                red: 'Yoga (yogaḥ) is the ending (nirodhaḥ) of the modifications (vṛtti) of mind (citta)'
+                },
+    {
+                verse: '1.3',
+                original: 'तदा द्रष्टुः स्वरूपेऽवस्थानम्',
+                sanskritSimplified: 'तदा (tadā) + द्रष्टुः (draṣṭuḥ) + स्वरूपे (svarūpe) + अवस्थानम् (avasthānam)',
+                chitta: 'Then, I abide in my true nature',
+                english: 'Then the seer abides in his own nature',
+                red: 'Then (tadā), there is an abiding (avasthānam) in the essential nature (sva-rūpe) of the Seer (draṣṭuḥ)'
+                },
+    {
+                verse: '1.4',
+                original: 'वृत्तिसारूप्यमितरत्र',
+                sanskritSimplified: 'वृत्ति (vṛtti) + सारूप्यम् (sārūpyam) + इतरत्र (itaratra)',
+                chitta: 'At other times, I identify with my mental modifications',
+                english: 'At other times, the seer identifies with the modifications',
+                red: 'On other occasions (itaratra), there is identity (sārūpyam) (between the Seer and) the modifications (of mind) (vṛtti)'
+                },
+    {
+                verse: '1.5',
+                original: 'वृत्तयः पञ्चतय्यः क्लिष्टा अक्लिष्टाः',
+                sanskritSimplified: 'वृत्तयः (vṛttayaḥ) + पञ्चतय्यः (pañcatayyaḥ) + क्लिष्टा (kliṣṭā) + अक्लिष्टाः (akliṣṭāḥ)',
+                chitta: 'My modifications are fivefold and they are either painful or not painful',
+                english: 'The mental modifications are five-fold and are either painful or not painful',
+                red: 'The (mental) modifications (vṛttayaḥ), which form a group of 5 (pañcatayyaḥ), may be or may not be based upon Kleśa-s --afflictions-- (kliṣṭāḥ akliṣṭāḥ)'
+                },
+    {
+                verse: '1.6',
+                original: 'प्रमाणविपर्ययविकल्पनिद्रास्मृतयः',
+                sanskritSimplified: 'प्रमाण (pramāṇa) + विपर्यय (viparyaya) + विकल्प (vikalpa) + निद्रा (nidrā) + स्मृतयः (smṛtayaḥ)',
+                chitta: 'My modifications are right knowledge, wrong knowledge, imagination, sleep, and memory',
+                english: 'They are right knowledge, wrong knowledge, conceptualization, sleep, and memory',
+                red: 'Correct knowledge (pramāṇa), false knowledge (viparyaya), verbal knowledge about something that is nonexistent (vikalpa), (deep) sleep (nidrā) and recollection --smṛti-- (smṛtayaḥ) (are the five modifications of mind)'
+                },
+    {
+                verse: '1.7',
+                original: 'प्रत्यक्षानुमानागमाः प्रमाणानि',
+                sanskritSimplified: 'प्रत्यक्ष (pratyakṣa) + अनुमान (anumāna) + आगमाः (āgamāḥ) + प्रमाणानि (pramāṇāni)',
+                chitta: 'My right knowledge consists of direct perception, inference, and scriptural testimony',
+                english: 'The sources of right knowledge are direct perception, inference, and scriptural testimony',
+                red: 'Direct perception (pratyakṣa), inference (anumāna) and testimony --āgama-- (āgamāḥ) are the Pramāṇa-s (pramāṇāni)'
+                },
+    {
+                verse: '1.8',
+                original: 'विपर्ययो मिथ्याज्ञानमतद्रूपप्रतिष्ठम्',
+                sanskritSimplified: 'विपर्यय (viparyaya) + मिथ्या (mithyā) + ज्ञानम् (jñānam) + अतद्रूप (atadrūpa) + प्रतिष्ठम् (pratiṣṭham)',
+                chitta: 'My wrong knowledge is false understanding, not based on the true nature of its object',
+                english: 'Wrong knowledge is a false conception of a thing whose real form does not correspond to such a mistaken conception',
+                red: 'Viparyaya (viparyayaḥ) is illusory (mithyā) knowledge (jñānam) based (pratiṣṭham) on mistaking a particular form for something completely different (atad-rūpa)'
+                },
+    {
+                verse: '1.9',
+                original: 'शब्दज्ञानानुपाती वस्तुशून्यो विकल्पः',
+                sanskritSimplified: 'शब्द (śabda) + ज्ञान (jñāna) + अनुपाती (anupātī) + वस्तु (vastu) + शून्य (śūnya) + विकल्पः (vikalpaḥ)',
+                chitta: 'My imagination is a mental concept based on word knowledge, devoid of substance',
+                english: 'An image conjured up by words without any substance behind it is fancy',
+                red: 'Vikalpa (vikalpaḥ) proceeds (anupātī) from a verbal (śabda) cognition (jñāna) about something which is devoid (śūnyaḥ) of reality (vastu)'
+                },
+    {
+                verse: '1.10',
+                original: 'अभावप्रत्ययालम्बना वृत्तिर्निद्रा',
+                sanskritSimplified: 'अभाव (abhāva) + प्रत्यय (pratyaya) + आलम्बना (ālambanā) + वृत्ति (vṛtti) + निद्रा (nidrā)',
+                chitta: 'My sleep is the mental modification based on the sense of nothingness',
+                english: 'That mental modification supported by cognition of nothingness is sleep',
+                red: 'The modification (vṛttiḥ) (known as) Nidrā (or deep sleep) (nidrā) is based (ālambanā) upon the mental state (pratyaya) of nonexistence (abhāva)'
+                },
+    {
+                verse: '1.11',
+                original: 'अनुभूतविषयासम्प्रमोषः स्मृतिः',
+                sanskritSimplified: 'अनुभूत (anubhūta) + विषय (viṣaya) + असंप्रमोषः (asaṁpramoṣaḥ) + स्मृतिः (smṛtiḥ)',
+                chitta: 'My memory retains my experiences',
+                english: 'Memory is the retention of experiences',
+                red: 'Smṛti (or recollection) (smṛtiḥ) is the reproduction, without taking anything from any other sources (asampramoṣaḥ), of the thing (viṣaya) that was (previously) experienced (anubhūta)'
+                },
+    {
+                verse: '1.12',
+                original: 'अभ्यासवैराग्याभ्यां तन्निरोधः',
+                sanskritSimplified: 'अभ्यास (abhyāsa) + वैराग्य (vairāgya) + आभ्यां (ābhyāṁ) + तन्निरोधः (tan-nirodhaḥ)',
+                chitta: 'I suppress my modifications through practice and non-attachment',
+                english: 'These mental modifications are restrained by practice and non-attachment',
+                red: 'There is suppression (nirodhaḥ) of that (i.e. ""of the previous five mental modifications"") (tad) by means of Abhyāsa --practice-- and Vairāgya --renunciation-- (abhyāsavairāgyābhyām)'
+                },
+    {
+                verse: '1.13',
+                original: 'तत्र स्थितौ यत्नोऽभ्यासः',
+                sanskritSimplified: 'तत्र (tatra) + स्थितौ (sthitau) + यत्नः (yatnaḥ) + अभ्यासः (abhyāsaḥ)',
+                chitta: 'I practice by making an effort to stay firmly in that state',
+                english: 'Practice is the effort to remain firmly established in the chosen state',
+                red: 'Abhyāsa or practice (abhyāsaḥ) is the effort (yatnaḥ) to attain to that (tatra) Sthiti or mental peace (sthitau)'
+                },
+    {
+                verse: '1.14',
+                original: 'स तु दीर्घकालनैरन्तर्यसत्कारासेवितो दृढभूमिः',
+                sanskritSimplified: 'स (sa) + तु (tu) + दीर्घ (dīrgha) + काल (kāla) + नैरन्तर्य (nairantarya) + सत्कार (satkāra) + सेवितः (sevitaḥ) + दृढ (dṛḍha) + भूमिः (bhūmiḥ)',
+                chitta: 'My practice becomes firmly grounded when I continue with reverent devotion and without interruption over a long period of time',
+                english: 'Practice becomes firmly grounded when continued with reverent devotion and without interruption over a long period of time',
+                red: 'And that (practice) (saḥ), when endowed (sevitaḥ) with a uninterrupted (nairantarya) and true (sat) devotional attitude (kārā) for a long (dīrgha) time (kāla), (has) certainly (tu) firm (dṛḍha) foundations (bhūmiḥ)'
+                },
+    {
+                verse: '1.15',
+                original: 'दृष्टानुश्रविकविषयवितृष्णस्य वशीकारसञ्ज्ञा वैराग्यम्',
+                sanskritSimplified: 'दृष्ट (dṛṣṭa) + अनुश्रविक (anuśravika) + विषय (viṣaya) + वितृष्णस्य (vitṛṣṇasya) + वशीकार (vaśīkāra) + सञ्ज्ञा (sañjñā) + वैराग्यम् (vairāgyam)',
+                chitta: 'I have non-attachment towards seen and heard objects through control over desires',
+                english: 'Dispassion is the mastery over desire for objects seen or heard about',
+                red: 'Vairāgya or Renunciation (vairāgyam) is known (sañjñā) as the act of subjugating (vaśīkāra) the desire (vitṛṣṇasya) for objects (viṣaya) seen (dṛṣṭa) or repeatedly heard from the scriptures (ānuśravika)'
+                },
+    {
+                verse: '1.16',
+                original: 'तत्परं पुरुषख्यातेर्गुणवैतृष्ण्यम्',
+                sanskritSimplified: 'तत्परं (tatparaṁ) + पुरुष (puruṣa) + ख्यातेः (khyāteḥ) + गुण (guṇa) + वैतृष्ण्यम् (vaitṛṣṇyam)',
+                chitta: 'Through realization of the Self, I transcend the qualities of nature',
+                english: 'The highest state of dispassion is freedom from desires of the gunas (qualities of nature) achieved through knowledge of the Purusha (Self)',
+                red: 'Indifference (vaitṛṣṇyam) to the Guṇa-s, (the qualities of nature) (guṇa), because of a knowledge (khyāteḥ) of Puruṣa (puruṣa) is called the highest (Vairāgya or Renunciation) (tad param)'
+                },
+    {
+                verse: '1.17',
+                original: 'वितर्कविचारानन्दास्मितारूपानुगमात्सम्प्रज्ञातः',
+                sanskritSimplified: 'वितर्क (vitarka) + विचार (vicāra) + आनन्द (ānanda) + अस्मिता (asmitā) + रूप (rūpa) + अनुसरण (anusarana) + सम्प्रज्ञातः (samprājñātaḥ)',
+                chitta: 'My understanding follows reasoning, reflection, joy, and pure I-am-ness',
+                english: 'Cognitive meditation is accompanied by reasoning, reflection, bliss, and the sense of I-am-ness',
+                red: 'Samprajñātasamādhi (samprajñātaḥ) (is achieved) by means of (anugamāt) Vitarka, Vicāra, Ānanda and Asmitā (vitarkavicārānandāsmitārūpa)'
+                },
+    {
+                verse: '1.18',
+                original: 'विरामप्रत्ययाभ्यासपूर्वः संस्कारशेषोऽन्यः',
+                sanskritSimplified: 'विराम (virāma) + प्रत्यय (pratyaya) + अभ्यास (abhyāsa) + पूर्वः (pūrvaḥ) + संस्कार (saṁskāra) + शेषः (śeṣaḥ) + अन्यः (anyaḥ)',
+                chitta: 'The other (deep concentration) is preceded by practice with effort towards stopping',
+                english: 'Another kind of meditation is preceded by the practice of stopping all mental modifications and leaving only residual impressions',
+                red: '(Asamprajñātasamādhi is the) other (type of Samādhi) (anyaḥ) that is preceded (pūrvaḥ) by the practice (abhyāsa) of stopping (virāma) the mental fluctuations (pratyaya) (which is the natural fruit of the highest Vairāgya or Renunciation, but that) it (still) contains a residue (śeṣaḥ) of latent impressions (saṁskāra)'
+                },
+    {
+                verse: '1.19',
+                original: 'भवप्रत्ययो विदेहप्रकृतिलयानाम्',
+                sanskritSimplified: 'भव (bhava) + प्रत्यय (pratyaya) + विदेह (videha) + प्रकृति (prakṛti) + लयानाम् (layānām)',
+                chitta: 'I experience birth or absorption into nature according to my previous actions',
+                english: 'Meditation with an object is for those who are attached to bodily existence or those who are absorbed in the primal cause of nature',
+                red: '(Thus, Nirvījasamādhi is caused by) the mental condition (pratyayaḥ) (that is the outcome) of latent impressions of ignorance (bhava) in the case of both the Videha-s or (discarnate) Deva-s (videha) and the Prakṛtilaya-s or those who have dissolved themselves in the primeval constituent principle (prakṛtilayānām)'
+                },
+    {
+                verse: '1.20',
+                original: 'श्रद्धावीर्यस्मृतिसमाधिप्रज्ञापूर्वक इतरेषाम्',
+                sanskritSimplified: 'श्रद्धा (śraddhā) + वीर्य (vīrya) + स्मृति (smṛti) + समाधि (samādhi) + प्रज्ञा (prajñā) + पूर्वक (pūrvaka) + इतरेषाम् (itareṣām)',
+                chitta: 'I practice with faith, energy, mindfulness, concentration, and wisdom',
+                english: 'For others, the practice is preceded by faith, energy, memory, deep concentration, and wisdom',
+                red: '(However,) in the case of those who tread the path of the conscious effort by using a method --upāya-- (itareṣām), (Nirvījasamādhi --which is now ""real Asamprajñātasamādhi""--) is preceded (pūrvakaḥ) by faith (śraddhā), vigor (vīrya), recollection (smṛti), full concentration (samādhi) (and) true knowledge (prajñā)'
+                },
+    {
+                verse: '1.21',
+                original: 'तीव्रसंवेगानामासन्नः',
+                sanskritSimplified: 'तीव्र (tīvra) + संवेगानाम् (saṁvegānām) + आसन्नः (āsannaḥ)',
+                chitta: 'With intense enthusiasm, I reach my goal quickly',
+                english: 'For those who have intense enthusiasm, the goal is near',
+                red: '(That very Nirvījasamādhi is quickly) reached (āsannaḥ) by those people having an intense (tīvra) desire of spiritual emancipation (saṁvegānām)'
+                },
+    {
+                verse: '1.22',
+                original: 'मृदुमध्याधिमात्रत्वात्ततोऽपि विशेषः',
+                sanskritSimplified: 'मृदु (mṛdu) + मध्यम (madhyama) + अधिमात्रत्वात् (adimātratvāt) + ततः (tataḥ) + अपि (api) + विशेषः (viśeṣaḥ)',
+                chitta: 'Depending on my level of practice—mild, medium, or intense—I experience different results',
+                english: 'Due to the mild, medium, and intense nature of practice, there are further distinctions',
+                red: 'Because of (the methods or means) being mild --slow-- (mṛdu), moderate --medium-- (madhya) and excessive --""adhimātra"" or speedy-- (adhimātratvāt), (there is) consequently (tatah) difference(s) (viśeṣaḥ) even (among those people who have an intense desire of spiritual emancipation) (api)'
+                },
+    {
+                verse: '1.23',
+                original: 'ईश्वरप्रणिधानाद्वा',
+                sanskritSimplified: 'ईश्वर (īśvara) + प्रणिधानात् (praṇidhānāt) + वा (vā)',
+                chitta: 'By surrendering to Ishvara, I attain peace and focus',
+                english: 'Or by surrendering to Ishvara (the Supreme Being)',
+                red: 'Or else (vā) (one can achieve Nirvījasamādhi) through profound devotion (praṇidhānāt) to Īśvara (īśvara)'
+                },
+    {
+                verse: '1.24',
+                original: 'क्लेशकर्मविपाकाशयैरपरामृष्टः पुरुषविशेष ईश्वरः',
+                sanskritSimplified: 'क्लेश (kleśa) + कर्म (karma) + विपाक (vipāka) + आशय (āśaya) + अपरामृष्टः (aparāmṛṣṭaḥ) + पुरुष (puruṣa) + विशेष (viśeṣa) + ईश्वरः (īśvaraḥ)',
+                chitta: 'Ishvara, the special Self, is untouched by afflictions, actions, results, and impressions',
+                english: 'Ishvara is a special Self, untouched by afflictions, actions, results, and impressions',
+                red: 'Īśvara (īśvaraḥ) is a particular (viśeṣaḥ) Puruṣa (puruṣa) who is not affected (aparāmṛṣṭaḥ) by Kleśa-s --afflictions-- (kleśa), actions (karma), fruit of the actions (vipāka) or the resulting latent impressions --āśaya-- (āśayaiḥ)'
+                },
+    {
+                verse: '1.25',
+                original: 'तत्र निरतिशयं सर्वज्ञवीजम्',
+                sanskritSimplified: 'तत्र (tatra) + निरतिशयं (niratiśayaṁ) + सर्वज्ञ (sarvajña) + बीजम् (bījam)',
+                chitta: 'In Ishvara lies the seed of omniscience, which I aim to realize',
+                english: 'In Him is the seed of omniscience',
+                red: 'In Him (tatra), the Omniscient (sarvajña) Seed (vījam) (has attained to a state which) cannot be exceeded or surpassed (niratiśayam)'
+                },
+    {
+                verse: '1.26',
+                original: 'पूर्वेषामपि गुरुः कालेनानवच्छेदात्',
+                sanskritSimplified: 'पूर्वेषाम् (pūrveṣām) + अपि (api) + गुरुः (guruḥ) + कालेन (kālena) + अनवच्छेदात् (anavacchedāt)',
+                chitta: 'I learn from the timeless teacher, Ishvara, who is not limited by time',
+                english: 'He is the teacher of even the ancient teachers, being not limited by time',
+                red: '(That Īśvara is) the Guru (guruḥ) even (api) of the former (guru-s) (pūrveṣām), because He is not determined or limited (anavacchedāt) by Time (kālena)'
+                },
+    {
+                verse: '1.27',
+                original: 'तस्य वाचकः प्रणवः',
+                sanskritSimplified: 'तस्य (tasya) + वाचकः (vācakaḥ) + प्रणवः (praṇavaḥ)',
+                chitta: 'I chant the sacred syllable Om to connect with Ishvara',
+                english: 'His expression is the sacred syllable Om',
+                red: 'The word (vācakaḥ) to (designate) Him (tasya) is Praṇava or Om̐ (praṇavaḥ or praṇavaḥ)'
+                },
+    {
+                verse: '1.28',
+                original: 'तज्जपस्तदर्थभावनम्',
+                sanskritSimplified: 'तज्जपः (tajjapaḥ) + तदर्थ (tadartha) + भावनम् (bhāvanam)',
+                chitta: 'I repeat and meditate on the meaning of Om',
+                english: 'Its repetition and contemplation of its meaning should be practiced',
+                red: '(Those who have finally understood the intrinsical relationship between Praṇava and Īśvara will perform) the muttering (japaḥ) of that (Om̐) (tad) (and) the contemplation (bhāvanam) on its (tad) meaning (artha)'
+                },
+    {
+                verse: '1.29',
+                original: 'ततः प्रत्यक्चेतनाधिगमोऽप्यन्तरायाभावश्च',
+                sanskritSimplified: 'ततः (tataḥ) + प्रत्यक् (pratyak) + चेतना (cetana) + अधिगमः (adhigamaḥ) + अपि (api) + अन्तराय (antarāya) + अभावः (abhāvaḥ) + च (ca)',
+                chitta: 'Through this practice, my consciousness turns inward, and obstacles are removed',
+                english: 'From this practice, the consciousness turns inward and the obstacles are removed',
+                red: 'From that (practice of Īśvarapraṇidhāna or devotion to Īśvara --Lord--) (tatah) (also comes) the realization (adhigamaḥ) of ones own true Self (pratyakcetana) as well as (api... ca) the removal (abhāvaḥ) of obstacles (antarāya)'
+                },
+    {
+                verse: '1.30',
+                original: 'व्याधिस्त्यानसंशयप्रमादालस्याविरतिभ्रान्तिदर्शनालब्धभूमिकत्वानवस्थितत्वानि चित्तविक्षेपास्तेऽन्तरायाः',
+                sanskritSimplified: 'व्याधि (vyādhi) + स्त्यान (styāna) + संशय (saṁśaya) + प्रमाद (pramāda) + आलस्य (ālasya) + अविरति (avirati) + भ्रान्ति (bhrānti) + दर्शन (darśana) + अलब्धभूमिकत्व (alabdhabhūmikatva) + अनवस्थितत्वानि (anavasthitatvāni) + चित्तविक्षेप (cittavikṣepa) + अः (āḥ) + अन्तरायाः (antarāyāḥ)',
+                chitta: 'I recognize disease, dullness, doubt, carelessness, laziness, non-abstinence, delusion, lack of progress, and instability as obstacles',
+                english: 'Disease, dullness, doubt, carelessness, laziness, non-abstinence, delusion, lack of progress, and instability of mind are the obstacles',
+                red: 'Sickness (vyādhi), mental inefficiency (styāna), doubt (saṁśaya), negligence (pramāda), idleness (ālasya), non-abstention --lack of control-- (avirati), erroneous perception (bhrānti-darśana), the state of not attaining (alabdha) to any yogic stage (bhūmikatva) (and) unsteadiness --anavasthitatva-- (anavasthitatvāni). Those (te) mental (citta) projections (vikṣepāḥ) (are) the obstacles (antarāyāḥ)'
+                },
+    {
+                verse: '1.31',
+                original: 'दुःखदौर्मनस्याङ्गमेजयत्वश्वासप्रश्वासा विक्षेपसहभुवः',
+                sanskritSimplified: 'दुःख (duḥkha) + दौर्मनस्य (daurmanasya) + अङ्गमेजयत्व (aṅgamejayatva) + श्वास (śvāsa) + प्रश्वासाः (praśvāsāḥ) + विक्षेप (vikṣepa) + सहभुवः (sahabhuvaḥ)',
+                chitta: 'I experience suffering, despair, trembling, and disturbed breathing along with mental distractions',
+                english: 'Suffering, despair, trembling of the body, and disturbed breathing accompany the mental distractions',
+                red: 'Pain (duḥkha), feeling of wretchedness and miserableness (daurmanasya), shakiness or trembling (ejayatva) of the body (aṅgam), inhalation (śvāsa) (and) exhalation --praśvāsa-- (praśvāsāḥ) appear or arise (bhuvaḥ) together with (saha) the (aforesaid) projections (vikṣepa)'
+                },
+    {
+                verse: '1.32',
+                original: 'तत्प्रतिषेधार्थमेकतत्त्वाभ्यासः',
+                sanskritSimplified: 'तत्प्रतिषेधार्थम् (tatpratiṣedhārtham) + एकतत्त्वाभ्यासः (ekatattvābhyāsaḥ)',
+                chitta: 'I prevent these by practicing concentration on a single principle',
+                english: 'For their prevention, the practice of concentration on a single principle should be done',
+                red: 'For (artham) keeping that back --i.e. for stopping those mental projections-- (tad-pratiṣedha), the practice (abhyāsaḥ) of (concentration on) a single (eka) principle (tattva) (is recommended)'
+                },
+    {
+                verse: '1.33',
+                original: 'मैत्रीकरुणामुदितोपेक्षाणां सुखदुःखपुण्यापुण्यविषयाणां भावनातश्चित्तप्रसादनम्',
+                sanskritSimplified: 'मैत्री (maitrī) + करुणा (karuṇā) + मुदिता (muditā) + उपेक्षा (upekṣā) + सुख (sukha) + दुःख (duḥkha) + पुण्य (puṇya) + अपुण्य (apuṇya) + विषय (viṣaya) + णाम् (ṇām) + भावनातः (bhāvanātaḥ) + चित्त (citta) + प्रसादनम् (prasādanam)',
+                chitta: 'I cultivate friendliness, compassion, joy, and equanimity towards pleasant and unpleasant situations and people to calm my mind',
+                english: 'By cultivating attitudes of friendliness, compassion, joy, and equanimity toward pleasant and unpleasant situations and good and bad people, the mind becomes peaceful',
+                red: 'Peace (prasādanam) of mind (citta) (is achieved) by (internally) contemplating (bhāvanātaḥ) on (the feelings) of friendship (maitrī), compassion (karuṇā), sympathy in joy (muditā) or indifference --upekṣā-- (upekṣāṇām) regarding (viṣayāṇām) (beings who are) happy (sukha), suffering pain or distress (duḥkha), virtuous (puṇya) (or) impure (apuṇya), (respectively)'
+                },
+    {
+                verse: '1.34',
+                original: 'प्रच्छर्दनविधारणाभ्यां वा प्राणस्य',
+                sanskritSimplified: 'प्रच्छर्दन (pracchardana) + विधारणाभ्याम् (vidhāraṇābhyām) + वा (vā) + प्राणस्य (prāṇasya)',
+                chitta: 'I practice regulation of my breath for mental steadiness',
+                english: 'Regulation of the breath, both exhalation and retention, can be practiced',
+                red: 'Or (vā) (that very peace of mind can also be achieved) by exhalation (pracchardana) and retention --vidhāraṇa-- (vidhāraṇābhyām) of Prāṇa --the vital energy contained in the breath-- (prāṇasya)'
+                },
+    {
+                verse: '1.35',
+                original: 'विषयवती वा प्रवृत्तिरुत्पन्ना मनसः स्थितिनिबन्धिनी',
+                sanskritSimplified: 'विषयवती (viṣayavatī) + वा (vā) + प्रवृत्तिः (pravṛttiḥ) + उत्पन्ना (utpannā) + मनसः (manasaḥ) + स्थितिनिबन्धिनी (sthitinibandhinī)',
+                chitta: 'I engage my mind in meditation on a sense object to maintain steadiness',
+                english: 'Steadiness of mind can also be achieved by focusing on a sense object',
+                red: 'Or (vā) a higher perception (pravṛttiḥ) relating to objects (viṣayavatī), (at the moment that) it emerges (utpannā), causes (nibandhinī) calm (sthiti) of mind (manasaḥ) (too)'
+                },
+    {
+                verse: '1.36',
+                original: 'विशोका वा ज्योतिष्मती',
+                sanskritSimplified: 'विशोका (viśokā) + वा (vā) + ज्योतिष्मती (jyotiṣmatī)',
+                chitta: 'I meditate on the effulgent, sorrowless light within',
+                english: 'Meditation on the effulgent light within can bring steadiness of mind',
+                red: 'Or (vā) (a higher perception) that is luminous (jyotiṣmatī) and free from sorrow (viśokā) (can also brings about peace of mind)'
+                },
+    {
+                verse: '1.37',
+                original: 'वीतरागविषयं वा चित्तम्',
+                sanskritSimplified: 'वीतराग (vītarāga) + विषयं (viṣayam) + वा (vā) + चित्तम् (cittam)',
+                chitta: 'I focus my mind on those who have transcended attachments',
+                english: 'Meditation on the mind of someone who is free from desires can bring steadiness of mind',
+                red: 'Or (vā) (the contemplation on) the mind (cittam) belonging (viṣayam) to a sage who is free from passions (vītarāga) (can also produce tranquility of mind)'
+                },
+    {
+                verse: '1.38',
+                original: 'स्वप्ननिद्राज्ञानालम्बनं वा',
+                sanskritSimplified: 'स्वप्न (svapna) + निद्रा (nidrā) + ज्ञान (jñāna) + आलम्बनम् (ālambanam) + वा (vā)',
+                chitta: 'I meditate on the knowledge gained in dreams and deep sleep',
+                english: 'Meditation on the knowledge gained in dreams and deep sleep can bring steadiness of mind',
+                red: 'Or (vā) the support (ālambanam) of the knowledges --in the form of words and/or images-- (jñāna) (experienced) in dreams (svapna) or in the state of dreamless sleep (nidrā) (can also bring peace and steadiness to the mind)'
+                },
+    {
+                verse: '1.39',
+                original: 'यथाभिमतध्यानाद्वा',
+                sanskritSimplified: 'यथा (yathā) + अभिमत (abhimata) + ध्यानात् (dhyānāt) + वा (vā)',
+                chitta: 'I meditate on any object of my choice',
+                english: 'Meditation on any object of choice can bring steadiness of mind',
+                red: 'Or (vā) by meditating (dhyānāt) on whatsoever suitable --from a yogic viewpoint, of course-- thing one may like (yathā-abhimata) (he can also attain to peace of mind)'
+                },
+    {
+                verse: '1.40',
+                original: 'परमाणुपरममहत्त्वान्तोऽस्य वशीकारः',
+                sanskritSimplified: 'परमाणु (paramāṇu) + परम (parama) + महत्त्व (mahatva) + अन्तः (antaḥ) + अस्य (asya) + वशीकारः (vaśīkāraḥ)',
+                chitta: 'From the smallest particle to the greatest, I gain mastery over them',
+                english: 'From the smallest particle to the greatest, control is gained',
+                red: '(When the mind gets stabilized on different realities at will, from one as minute as) an atom --in the sense of the minutest conceivable particle which cannot be further divided-- (paramāṇu) up to (antaḥ) (other that is) infinitely great (paramamahattva), (then, complete) mastery or dominion (vaśīkāraḥ) over it (asya) (has been achieved)'
+                },
+    {
+                verse: '1.41',
+                original: 'क्षीणवृत्तेरभिजातस्येव मणेर्ग्रहीतृग्रहणग्राह्येषु तत्स्थतदञ्जनता समापत्तिः',
+                sanskritSimplified: 'क्षीणवृत्तेः (kṣīṇavṛtteḥ) + अभिजातस्य (abhijātasya) + इव (iva) + मणेः (maṇeḥ) + ग्रहीतृ (grahītṛ) + ग्रहण (grahaṇa) + ग्राह्य (grāhya) + षु (ṣu) + तत्स्थ (tatstha) + तदञ्जनता (tadanjanatā) + समापत्तिः (samāpattiḥ)',
+                chitta: 'Like a clear jewel, I become one with the knower, knowledge, and the object of knowledge',
+                english: 'Like a crystal, the yogi becomes one with the knower, knowledge, and the object of knowledge',
+                red: 'When a weakened (kṣīṇa) fluctuation of mind (vṛtteḥ) (finally) arises consequently --that is, when the mental fluctuation is lastly weakened and the mind attains stability-- (abhijātasya), (this fluctuation behaves) like (iva) a (transparent) gem (maṇeḥ) in respect of the knower (grahītṛ), the instrument of knowledge (grahaṇa) and the knowables --grāhya-- (grāhyeṣu) --which are all objects of mental concentration--. (This, as it were,) act of assuming the color --nature-- of any near reality (tad-stha-tad-añjanatā) (by that gem-like weakened fluctuation of mind, is known as) Samāpatti or Engrossment (samāpattiḥ)'
+                },
+    {
+                verse: '1.42',
+                original: 'शब्दार्थज्ञानविकल्पैः सङ्कीर्णा सवितर्का समापत्तिः',
+                sanskritSimplified: 'शब्द (śabda) + अर्थ (artha) + ज्ञान (jñāna) + विकल्पैः (vikalpaiḥ) + सङ्कीर्णा (saṅkīrṇā) + सवितर्का (savītarkā) + समापत्तिः (samāpattiḥ)',
+                chitta: 'My reasoning meditation is mixed with words, their meanings, and knowledge',
+                english: 'Reasoning meditation is mixed with words, their meanings, and knowledge',
+                red: 'Savitarkā Samāpatti (savitarkā samāpattiḥ) (is that Engrossment which is) combined (saṅkīrṇā) with ideas or thoughts (vikalpaiḥ) of (sameness) between word (śabda), (its) meaning (artha) and (the resulting) knowledge (jñāna)'
+                },
+    {
+                verse: '1.43',
+                original: 'स्मृतिपरिशुद्धौ स्वरूपशून्येवार्थमात्रनिर्भासा निर्वितर्का',
+                sanskritSimplified: 'स्मृति (smṛti) + परिशुद्धौ (pariśuddhau) + स्वरूप (svarūpa) + शून्य (śūnya) + इव (iva) + अर्थ (artha) + मात्र (mātra) + निर्भासा (nirbhāsā) + निर्वितर्का (nirvitarkā)',
+                chitta: 'When my memory is purified, my meditation is free from reasoning and shines with the essence of the object alone',
+                english: 'When the memory is purified, the mind becomes devoid of reasoning and shines with the essence of the object alone',
+                red: 'When memory (smṛti) is completely purified (pariśuddhau), (and the intuitive cognition is), as it were (iva), devoid (śūnyā) of its own essential nature (sva-rūpa), (that Samāpatti or Engrossment) in which only (mātra) the object (on which the mind is concentrated) (artha) shines forth (nirbhāsā) (is called) Nirvitarkā (nirvitarkā)'
+                },
+    {
+                verse: '1.44',
+                original: 'एतयैव सविचारा निर्विचारा च सूक्ष्मविषया व्याख्याता',
+                sanskritSimplified: 'एतया (etayā) + एव (eva) + सविचारा (savicārā) + निर्विचारा (nirvicārā) + च (ca) + सूक्ष्मविषया (sūkṣmaviṣayā) + व्याख्याता (vyākhyātā)',
+                chitta: 'Through this, I understand the meditative states with and without reflection, pertaining to subtle objects',
+                english: 'Through this, the meditative states with and without reflection, pertaining to subtle objects, are understood',
+                red: 'By means of this --i.e. by the previous explanation-- (etayā) (the Samāpatti-s or Engrossments known as) Savicārā (savicārā) and (ca) Nirvicārā (nirvicārā), whose objects (viṣayā) are subtle (sūkṣma), are also (eva) explained (vyākhyātā)'
+                },
+    {
+                verse: '1.45',
+                original: 'सूक्ष्मविषयत्वं चालिङ्गपर्यवसानम्',
+                sanskritSimplified: 'सूक्ष्म (sūkṣma) + विषयत्वम् (viṣayatvam) + च (ca) + अ (a) + लिङ्ग (liṅga) + पर्यवसानम् (paryavasānam)',
+                chitta: 'The subtle objects extend up to the unmanifest state',
+                english: 'The subtle objects extend up to the unmanifest state',
+                red: 'And (ca) the character or condition of being a subtle (sūkṣma) object (viṣayatvam) (regarding a previous one which is less subtle) ends or culminates (paryavasānam) in Aliṅga --the Unmanifested Prakṛti-- (aliṅga)'
+                },
+    {
+                verse: '1.46',
+                original: 'ता एव सवीजः समाधिः',
+                sanskritSimplified: 'ता (tā) + एव (eva) + सवीजः (savījaḥ) + समाधिः (samādhiḥ)',
+                chitta: 'These states of meditation with seeds are indeed profound',
+                english: 'These states of meditation with seeds are indeed profound',
+                red: 'Only (eva) those (four varieties of Samāpatti or Engrossment --Savitarkā, Nirvitarkā, Savicārā and Nirvicārā--) (tāḥ) (constitute) Savījasamādhi (savījaḥ samādhiḥ) (or the perfect concentration in which one uses a gross/subtle object or ""vīja"" as a support for his mind to become one-pointed)'
+                },
+    {
+                verse: '1.47',
+                original: 'निर्विचारवैशारद्येऽध्यात्मप्रसादः',
+                sanskritSimplified: 'निर्विचार (nirvicāra) + वैशारद्ये (vaiśāradye) + अध्यात्म (adhyātma) + प्रसादः (prasādaḥ)',
+                chitta: 'In the clarity of reflection-free meditation, I find spiritual tranquility',
+                english: 'In the clarity of reflection-free meditation, spiritual tranquility is found',
+                red: 'On getting skill or proficiency (vaiśāradye) in Nirvicārasamādhi --also known as Nirvicārā Samāpatti or Engrossment-- (nirvicāra), clearness or purity (prasādaḥ) in the inner instruments of knowledge --specially Buddhi or Intellect-- (adhyātma) (is developed as a result)'
+                },
+    {
+                verse: '1.48',
+                original: 'ऋतम्भरा तत्र प्रज्ञा',
+                sanskritSimplified: 'ऋतम्भरा (ṛtambharā) + तत्र (tatra) + प्रज्ञा (prajñā)',
+                chitta: 'My knowledge filled with truth arises there',
+                english: 'Knowledge filled with truth arises there',
+                red: 'The deep understanding or knowledge (prajñā) (obtained) in that (state of Nirvicārasamādhi or Nirvicārā Samāpatti) (tatra) (is called) Ṛtambharā (ṛtambharā)'
+                },
+    {
+                verse: '1.49',
+                original: 'श्रुतानुमानप्रज्ञाभ्यामन्यविषया विशेषार्थत्वात्',
+                sanskritSimplified: 'श्रुता (śrutā) + अनुमान (anumāna) + प्रज्ञाभ्याम् (prajñābhyām) + अन्य (anya) + विषय (viṣaya) + विशेष (viśeṣa) + अर्थत्वात् (arthatvāt)',
+                chitta: 'This knowledge is different from what is gained through scriptures or inference, as it has a specific purpose',
+                english: 'This knowledge is different from what is gained through scriptures or inference, as it has a specific purpose',
+                red: '(And that Prajñā or deep knowledge gained in Nirvicārasamādhi) is different (anyaviṣayā) from knowledges (prajñābhyām) gotten through oral transmission (śruta) or inference (anumāna), because it relates to the particular characteristics (viśeṣa) of objects --artha-- (arthatvāt)'
+                },
+    {
+                verse: '1.50',
+                original: 'तज्जः संस्कारोऽन्यसंस्कारप्रतिबन्धी',
+                sanskritSimplified: 'तज्जः (tajjah) + संस्कारः (saṁskāraḥ) + अन्य (anya) + संस्कार (saṁskāra) + प्रतिबन्धी (pratibandhī)',
+                chitta: 'The impressions born from this knowledge prevent other impressions',
+                english: 'The impressions born from this knowledge prevent other impressions',
+                red: 'The latent impression (saṁskāraḥ) born (jaḥ) of that (special Prajñā arisen in Nirvicārasamādhi) (tad) obstructs (pratibandhī) the other (anya) latent impressions (saṁskāra)'
+                },
+    {
+                verse: '1.51',
+                original: 'तस्यापि निरोधे सर्वनिरोधान्निर्वीजः समाधिः',
+                sanskritSimplified: 'तस्य (tasya) + अपि (api) + निरोधे (nirodhe) + सर्व (sarva) + निरोधात् (nirodhāt) + निर्वीजः (nirvījaḥ) + समाधिः (samādhiḥ)',
+                chitta: 'By the suppression of even these impressions, I reach seedless meditation',
+                english: 'By the suppression of even these impressions, seedless meditation is reached',
+                red: 'On the cessation (nirodhe) of that --i.e. of the latent impression born of the aforesaid Prajñā-- (tasya) too (api), there is Nirvījasamādhi --or the perfect concentration which is objectless or ""nirvīja"", i.e. no object or ""vīja"" is utilized as a support for ones own mind to become one-pointed-- (nirvījaḥ samādhiḥ) through the suppression (nirodhāt) of all (mental modifications or fluctuations) (sarva)'
+                },
+    
+                ],
+                2: [
+                    {
+                        verse: '2.1',
+                        original: 'तपःस्वाध्यायेश्वरप्रणिधानानि क्रियायोगः',
+                        sanskritSimplified: 'तपः (tapaḥ) + स्वाध्याय (svādhyāya) + ईश्वर (īśvara) + प्रणिधानानि (praṇidhānāni) + क्रिया (kriyā) + योगः (yogaḥ)',
+                        chitta: 'I practice yoga through austerity, self-study, and dedication to Ishvara',
+                        english: '"Kriya Yoga is the practice of austerity, self-study, and dedication to Ishvara."',
+                        red: 'Austerity or Penance (tapas), Study of scriptures and Chanting of mantra-s (svādhyāya) (and) Devotion --praṇidhāna-- (praṇidhānāni) to the (Supreme) Lord (īśvara) (are) Kriyāyoga (kriyāyogaḥ)'
+                    },
+                    {
+                        verse: '2.2',
+                        original: 'समाधिभावनार्थः क्लेशतनूकरणार्थश्च',
+                        sanskritSimplified: 'समाधि (samādhi) + भावनार्थः (bhāvanārthaḥ) + क्लेश (kleśa) + तनूकरणार्थः (tanūkaraṇārthaḥ) + च (ca)',
+                        chitta: 'My practice aims to cultivate samadhi and weaken the afflictions',
+                        english: '"This practice is for cultivating samadhi and for attenuating the afflictions."',
+                        red: '(Kriyāyoga should be practiced) for (arthaḥ... arthaḥ) producing (bhāvana) Samādhi or Perfect Concentration (samādhi) and (ca) attenuating (tanūkaraṇa) the Kleśa-s (kleśa)'
+                    },
+                    {
+                        verse: '2.3',
+                        original: 'अविद्यास्मितारागद्वेषाभिनिवेशाः पञ्च क्लेशाः',
+                        sanskritSimplified: 'अविद्या (avidyā) + अस्मिता (asmitā) + राग (rāga) + द्वेष (dveṣa) + अभिनिवेशाः (abhiniveśāḥ) + पञ्च (pañca) + क्लेशाः (kleśāḥ)',
+                        chitta: 'Ignorance, egoism, attachment, aversion, and fear of death are my five afflictions',
+                        english: '"Ignorance, egoism, attachment, aversion, and clinging to life are the five afflictions."',
+                        red: 'Ignorance (in the form of a misapprehension about Reality) (avidyā), egoism (in the form of an erroneous identification of the Self with the intellect) (asmitā), attachment (rāga), aversion (dveṣa) and fear of death (which is derived from clinging ignorantly to life) --abhiniveśā-- (abhiniveśāḥ) are the five (pañca) Kleśa-s or Afflictions (kleśāḥ)'
+                    },
+                    {
+                verse: '2.4',
+                original: 'अविद्या क्षेत्रमुत्तरेषां प्रसुप्ततनुविच्छिन्नोदाराणाम्',
+                sanskritSimplified: 'अविद्या (avidyā) + क्षेत्रम् (kṣetram) + उत्तरेषाम् (uttareṣām) + प्रसुप्त (prasupta) + तनु (tanu) + विच्छिन्न (vicchinna) + उदाराणाम् (udārāṇām)',
+                chitta: 'Ignorance is the field for the other afflictions, whether dormant, attenuated, interrupted, or active',
+                english: 'Ignorance is the breeding ground of the other afflictions, whether they are dormant, weak, intercepted, or fully active',
+                red: 'Ignorance (in the form of a misapprehension about Reality) (avidyā) is the (breeding) field or ground (kṣetram) for the subsequent (four Kleśa-s) (uttareṣām) (whether they be) dormant (prasupta), attenuated (tanu), interrupted (vicchinna) or active --udāra-- (udārāṇām)'
+                },
+    {
+                verse: '2.5',
+                original: 'अनित्याशुचिदुःखानात्मसु नित्यशुचिसुखात्मख्यातिरविद्या',
+                sanskritSimplified: 'अनित्य (anitya) + अशुचि (aśuci) + दुःख (duḥkha) + अनात्मसु (anātmasu) + नित्य (nitya) + शुचि (śuci) + सुख (sukha) + आत्म (ātma) + ख्यातिः (khyātiḥ) + अविद्या (avidyā)',
+                chitta: 'Mistaking the non-eternal, impure, painful, and non-self for the eternal, pure, joyful, and self is my ignorance',
+                english: 'Ignorance is mistaking the non-eternal, impure, painful, and non-self for the eternal, pure, joyful, and self',
+                red: 'Ignorance (avidyā) is to consider (khyātiḥ) as everlasting (nitya) what is not everlasting (anitya), as pure (śuci) what is not pure (aśuci), as pleasure (or ""pleasant"") (sukha) what is pain (or ""unpleasant"") (duḥkha) and as the Self (ātma) what is the not-Self --anātma-- (anātmasu)'
+                },
+    {
+                verse: '2.6',
+                original: 'दृग्दर्शनशक्त्योरेकात्मतेवास्मिता',
+                sanskritSimplified: 'दृष्टि (dṛṣṭi) + दर्शन (darśana) + शक्त्योः (śaktyoḥ) + एकात्मता (ekātmatā) + इव (iva) + अस्मिता (asmitā)',
+                chitta: 'Egoism is my identification of the power of the seer with that of the instrument of seeing',
+                english: 'Egoism is the identification of the power of the seer with the power of seeing',
+                red: 'Egoism (asmitā) is tantamount (iva) to the identification (ekātmatā) of the Cognizant or Knowing (dṛk) Power --śakteḥ or śaktyāḥ--1 (śaktyoḥ) --i.e. ""Puruṣa or the Absolute Consciousness""-- with the cognitive (darśana) power --śakteḥ or śaktyāḥ--2 (śaktyoḥ) --i.e. ""Buddhi or intellect""--'
+                },
+    {
+                verse: '2.7',
+                original: 'सुखानुशयी रागः',
+                sanskritSimplified: 'सुख (sukha) + अनुशयी (anuśayī) + रागः (rāgaḥ)',
+                chitta: 'Attachment is my dwelling upon pleasure',
+                english: 'Attachment is dwelling upon pleasure',
+                red: 'Attachment (rāgaḥ) is that which results (anuśayī) from pleasure (sukha); --i.e. ""Attachment is the modification that is forged by the remembrance of enjoyed pleasure'
+                },
+    {
+                verse: '2.8',
+                original: 'दुःखानुशयी द्वेषः',
+                sanskritSimplified: 'दुःख (duḥkha) + अनुशयी (anuśayī) + द्वेषः (dveṣaḥ)',
+                chitta: 'Aversion is my dwelling upon pain',
+                english: 'Aversion is dwelling upon pain',
+                red: 'Aversion (dveṣaḥ) is that which results (anuśayī) from pain or sorrow (duḥkha); --i.e. ""Aversion is the modification that is forged by the experience of misery'
+                },
+    {
+                verse: '2.9',
+                original: 'स्वरसवाही विदुषोऽपि तथारूढोऽभिनिवेशः',
+                sanskritSimplified: 'स्वरस (svarasa) + वहि (vahī) + विदुषः (viduṣaḥ) + अपि (api) + तथा (tathā) + अरूढः (arūḍhaḥ) + अभिनिवेशः (abhiniveśaḥ)',
+                chitta: 'The clinging to life is my inherent tendency, even in the learned',
+                english: 'Clinging to life, flowing through its own nature, is established even in the wise',
+                red: 'The inborn (svarasavāhī) fear of death (abhiniveśaḥ) is established (ārūḍhaḥ) in like manner (in everyone) (tathā), even (api) in the wise (viduṣaḥ); --i.e. ""Fear of death may be found in the ignorant as well as in the learned people'
+                },
+    {
+                verse: '2.10',
+                original: 'ते प्रतिप्रसवहेयाः सूक्ष्माः',
+                sanskritSimplified: 'ते (te) + प्रतिप्रसव (pratiprasava) + हेयाः (heyāḥ) + सूक्ष्माः (sūkṣmāḥ)',
+                chitta: 'These afflictions are eliminated by meditation',
+                english: 'These afflictions are eliminated by meditation',
+                red: 'Those (te) subtle (Kleśa-s or Afflictions) (sūkṣmāḥ) are to be abandoned or forsaken (heyāḥ) by means of the cessation of (mental) production (pratiprasava)'
+                },
+    {
+                verse: '2.11',
+                original: 'ध्यानहेयास्तद्वृत्तयः',
+                sanskritSimplified: 'ध्यान (dhyāna) + हेयाः (heyāḥ) + तद्वृत्तयः (tadvṛttayaḥ)',
+                chitta: 'My karma has consequences seen and unseen',
+                english: 'Karma results in visible and invisible consequences',
+                red: 'The (afflictive) modifications (vṛttayaḥ) of that --i.e. ""of the abovementioned Kleśa-s or Afflictions""-- (tad) are to be abandoned or forsaken (heyāḥ) through meditation (dhyāna)'
+                },
+    {
+                verse: '2.12',
+                original: 'क्लेशमूलः कर्माशयो दृष्टादृष्टजन्मवेदनीयः',
+                sanskritSimplified: 'क्लेश (kleśa) + मूलः (mūlaḥ) + कर्माशयः (karmāśayaḥ) + दृष्ट (dṛṣṭa) + अदृष्ट (adṛṣṭa) + जन्म (janma) + वेदनीयः (vedanīyaḥ)',
+                chitta: 'When the root exists, it leads to my birth, lifespan, and experiences',
+                english: 'As long as the root of action exists, it will bear fruits, such as rebirth, a long or short life, and the experiences of pleasure and pain',
+                red: 'Latent impression of action (karma-āśayaḥ), which is based (mūlaḥ) upon Kleśa-s or Afflictions (kleśa), becomes manifest (vedanīyaḥ) in the present life (dṛṣṭa... janma) or in a future life (adṛṣṭajanma)'
+                },
+    {
+                verse: '2.13',
+                original: 'सति मूले तद्विपाको जात्यायुर्भोगाः',
+                sanskritSimplified: 'सति (sati) + मूले (mūle) + तद्विपाकः (tadvipākaḥ) + जाति (jāti) + आयुः (āyuḥ) + भोगाः (bhogāḥ)',
+                chitta: 'My actions result in joy or suffering due to their virtuous or non-virtuous nature',
+                english: 'Actions bring either joyful or painful experiences based on their virtue or non-virtue',
+                red: 'As long as that --i.e. ""Kleśa-s or Afflictions""-- remains (sati) at the root (mūle), the consequence or result (vipākaḥ) of it (tad) is birth (jāti), span of life (āyus) and experience --bhoga-- (bhogāḥ)'
+                },
+    {
+                verse: '2.14',
+                original: 'ते ह्लादपरितापफलाः पुण्यापुण्यहेतुत्वात्',
+                sanskritSimplified: 'ते (te) + ह्लाद (hlāda) + परिताप (paritāpa) + फलाः (phalāḥ) + पुण्य (puṇya) + अपुण्य (apuṇya) + हेतुत्वात् (hetutvāt)',
+                chitta: 'For the discerning, all is suffering due to the conflicts of transformation, anxiety, and impressions of the modes of nature',
+                english: 'To the discriminating, everything is painful due to the conflict of change, anxiety, and the impressions left by the experience of the gunas',
+                red: 'On account (hetutvāt) of virtue (puṇya) and vice (apuṇya), those --i.e. ""birth, span of life and experience""-- (te) (appear as) the fruits (phalāḥ) of pleasure (hlāda) or pain (paritāpa), (respectively)'
+                },
+    {
+                verse: '2.15',
+                original: 'परिणामतापसंस्कारदुःखैर्गुणवृत्तिविरोधाच्च दुःखमेव सर्वं विवेकिनः',
+                sanskritSimplified: 'परिणाम (pariṇāma) + ताप (tāpa) + संस्कार (saṁskāra) + दुःखैः (duḥkhaiḥ) + गुण (guṇa) + वृत्ति (vṛtti) + विरोधात् (virodhāt) + च (ca) + दुःखम् (duḥkham) + एव (eva) + सर्वम् (sarvam) + विवेकिनः (vivekinaḥ)',
+                chitta: 'I must avoid future suffering',
+                english: 'Future suffering is to be avoided',
+                red: 'For discerning people (vivekinaḥ), everything (sarvam) is indeed (considered to be) (eva) painful (duḥkham) because of the sufferings (duḥkhaiḥ) (derived from) the results or consequences (of  ones own actions) (pariṇāma), (from) the sorrowful experiences (tāpa) (and from) the latent impressions (saṁskāra), and also (ca) due to the (mutual) opposition (virodhāt) of the modifications (vṛtti) of the Guṇa-s (or qualities of Pradhāna1) (guṇa)'
+                },
+    {
+                verse: '2.16',
+                original: 'हेयं दुःखमनागतम्',
+                sanskritSimplified: 'हेयम् (heyam) + दुःखम् (duḥkham) + अनागतम् (anāgatam)',
+                chitta: 'The cause of my avoidable suffering is the union of the seer and the seen',
+                english: 'The cause of avoidable suffering is the union of the seer and the seen',
+                red: 'Future (anāgatam) pain (duḥkham) is to be abandoned or forsaken (heyam)'
+                },
+    {
+                verse: '2.17',
+                original: 'द्रष्टृदृश्ययोः संयोगो हेयहेतुः',
+                sanskritSimplified: 'द्रष्टृ (draṣṭṛ) + दृश्ययोः (dṛśyayoḥ) + संयोगः (saṁyogaḥ) + हेय (heya) + हेतुः (hetuḥ)',
+                chitta: 'The seen is composed of light, activity, and inertia, the elements and senses, and exists for my experience and liberation',
+                english: 'The seen is composed of light, activity, and inertia, the elements and senses, and exists for the purpose of experience and liberation',
+                red: 'The union (saṁyogaḥ) of the ""Seer"" --i.e. ""of the Subject""-- (draṣṭṛ) with the ""seen"" (or knowable) --i.e. ""with the animate or inanimate object"" or ""dṛśya""-- (dṛśyayoḥ) is the cause (hetuḥ) of that which is to be abandoned or forsaken (heya)'
+                },
+    {
+                verse: '2.18',
+                original: 'प्रकाशक्रियास्थितिशीलं भूतेन्द्रियात्मकं भोगापवर्गार्थं दृश्यम्',
+                sanskritSimplified: 'प्रकाश (prakāśa) + क्रिया (kriyā) + स्थितिशीलं (sthitiśīlaṁ) + भूतेन्द्रियात्मकं (bhūtendriyātmakaṁ) + भोग (bhoga) + अपवर्गार्थं (apavargārthaṁ) + दृश्यम् (dṛśyam)',
+                chitta: 'The stages of the modes of nature are specific, non-specific, indicator-only, and without indicators',
+                english: 'The stages of the modes of nature are specific, non-specific, indicator-only, and without indicators',
+                red: 'The ""knowable"" --i.e. ""the object""-- (dṛśyam) is by nature (śīlam) sentient (prakāśa), mutable (kriyā) and inert (sthiti). (Secondly,) it consists (ātmakam) of (subtle and gross) elements (bhūta) (and) Indriya-s --i.e. ""Powers of perceiving (Jñānendriya-s)"" along with ""Powers of action (Karmendriya-s)""-- (indriya). (Lastly,) it is for the sake (artham) of experience (bhoga) and Liberation (apavarga)'
+                },
+    {
+                verse: '2.19',
+                original: 'विशेषाविशेषलिङ्गमात्रालिङ्गानि गुणपर्वाणि',
+                sanskritSimplified: 'विशेष (viśeṣa) + अविशेष (aviśeṣa) + लिङ्गमात्र (liṅgamātra) + अलिङ्गानि (aliṅgāni) + गुणपर्वाणि (guṇaparvāṇi)',
+                chitta: 'The seer is pure consciousness and witnesses the seen',
+                english: 'The seer is pure consciousness, witnessing the seen',
+                red: 'The states of mutation (parvāṇi) of the Guṇa-s (or qualities of Pradhāna1) (guṇa) (are): ""diversified"" (viśeṣa), ""undiversified"" (aviśeṣa), ""indicator-only"" (liṅgamātra) and ""one which is with no indication or mark"" --aliṅga-- (aliṅgāni)'
+                },
+    {
+                verse: '2.20',
+                original: 'द्रष्टा दृशिमात्रः शुद्धोऽपि प्रत्ययानुपश्यः',
+                sanskritSimplified: 'द्रष्टा (draṣṭā) + दृशिमात्रः (dṛśimātraḥ) + शुद्धः (śuddhaḥ) + अपि (api) + प्रत्यय (pratyaya) + अनुपश्यः (anupaśyaḥ)',
+                chitta: 'I exist for the seer’s purpose',
+                english: 'The seen exists for the purpose of the seer',
+                red: 'The Seer (draṣṭā) is only (mātraḥ) a Witness --i.e. ""He is an absolute Knower and completely devoid of Guṇa-s and subsequent mutation""-- (dṛśi) who although (api) pure (śuddhaḥ), beholds (anupaśyaḥ) the mental modifications (pratyaya)'
+                },
+    {
+                verse: '2.21',
+                original: 'तदर्थ एव दृश्यस्यात्मा',
+                sanskritSimplified: 'तदर्थ (tadartha) + एव (eva) + दृश्यस्य (dṛśyasya) + आत्मा (ātmā)',
+                chitta: 'The seer and the seen exist for each others purposes',
+                english: 'The seer and the seen exist for each others purposes',
+                red: 'The nature (ātmā) of the knowable (dṛśyasya) is really (eva) (to be) the object (of perception) (arthaḥ) of That --i.e. ""of Puruṣa, the Absolute Knower""-- (tad)'
+                },
+    {
+                verse: '2.22',
+                original: 'कृतार्थं प्रति नष्टमप्यनष्टं तदन्यसाधारणत्वात्',
+                sanskritSimplified: 'कृतार्थं (kṛtārthaṁ) + प्रति (prati) + नष्टम् (naṣṭam) + अपि (api) + अनष्टम् (anaṣṭam) + तत् (tat) + अन्य (anya) + साधारणत्वात् (sādhāraṇatvāt)',
+                chitta: 'The seer is pure and observes the seen',
+                english: 'The seer is pure and observes the seen',
+                red: 'Even though (api) disappeared (naṣṭam) with regard (prati) to one (Puruṣa) who has accomplished his purpose (with it) (kṛta-artham), that --i.e. ""the object or knowable""-- (tad) does not (really) disappear (anaṣṭam) because of being common (sādhāraṇatvāt) to others (anya) (too) --i.e. ""other Puruṣa-s also might use it even after its having been utilized by one of them previously'
+                },
+    {
+                verse: '2.23',
+                original: 'स्वस्वामिशक्त्योः स्वरूपोपलब्धिहेतुः संयोगः',
+                sanskritSimplified: 'स्व (sva) + स्वामि (svāmi) + शक्त्योः (śaktyoḥ) + स्वरूप (svarūpa) + उपलब्धि (upalabdhi) + हेतुः (hetuḥ) + संयोगः (saṁyogaḥ)',
+                chitta: 'The conjunction of the seer and the seen is the cause of my realization of my own form',
+                english: 'The conjunction of the seer and the seen is the cause of realization of  ones own form',
+                red: 'Union or alliance (saṁyogaḥ) is the cause (hetuḥ) for realizing (upalabdhi) the true nature (sva-rūpa) of the two powers (śaktyoḥ) (called) ""object --as property--"" (sva) (and) ""subject --as owner--"" (svāmi)'
+                },
+    {
+                verse: '2.24',
+                original: 'तस्य हेतुरविद्या',
+                sanskritSimplified: 'तस्य (tasya) + हेतुः (hetuḥ) + अविद्या (avidyā)',
+                chitta: 'Ignorance is the cause of this conjunction',
+                english: 'Ignorance is the cause of this conjunction',
+                red: 'Ignorance (avidyā) is the cause (hetuḥ) of that (union or alliance) (tasya)'
+                },
+    {
+                verse: '2.25',
+                original: 'तदभावात्संयोगाभावो हानं तद्दृशेः कैवल्यम्',
+                sanskritSimplified: 'तत् (tat) + अभावात् (abhāvāt) + संयोग (saṁyoga) + अभावः (abhāvaḥ) + हानं (hānaṁ) + तत् (tat) + दृशेः (dṛśeḥ) + कैवल्यम् (kaivalyam)',
+                chitta: 'With the absence of this ignorance, the conjunction ends, leading to my liberation',
+                english: 'With the absence of ignorance, the conjunction ends, leading to liberation',
+                red: 'The absence (abhāvaḥ) of union or alliance (saṁyoga) arising from the absence (abhāvāt) of that --i.e. ""of Adarśana or lack of discriminative knowledge or real discernment about Reality""-- (tad) is Kaivalya (kaivalyam) or the state of Emancipation (hānam) of that (tad) (absolute) Knower (dṛśeḥ) (known as Puruṣa)'
+                },
+    {
+                verse: '2.26',
+                original: 'विवेकख्यातिरविप्लवा हानोपायः',
+                sanskritSimplified: 'विवेक (viveka) + ख्यातिः (khyātiḥ) + अविप्लवा (aviplavā) + हान (hāna) + उपायः (upāyaḥ)',
+                chitta: 'Unwavering discriminative knowledge is the means to my liberation',
+                english: 'Unwavering discriminative knowledge is the means to liberation',
+                red: 'The means (upāyaḥ) of Liberation (hāna) is discriminative (viveka) knowledge (khyātiḥ) which is completely devoid of confusion or disorder (aviplavā)'
+                },
+    {
+                verse: '2.27',
+                original: 'तस्य सप्तधा प्रान्तभूमिः प्रज्ञा',
+                sanskritSimplified: 'तस्य (tasya) + सप्तधा (saptadhā) + प्रान्तभूमिः (prāntabhūmiḥ) + प्रज्ञा (prajñā)',
+                chitta: 'My wisdom manifests in seven stages',
+                english: 'Wisdom manifests in seven stages',
+                red: 'A seven-fold (saptadhā) (and) ultimate (prāntabhūmiḥ) deep understanding (prajñā) (comes) to that (Yogī who has attained discriminative knowledge) (tasya)'
+                },
+    {
+                verse: '2.28',
+                original: 'योगाङ्गानुष्ठानादशुद्धिक्षये ज्ञानदीप्तिराविवेकख्यातेः',
+                sanskritSimplified: 'योग (yoga) + अङ्ग (aṅga) + अनुष्ठानात् (anuṣṭhānāt) + अशुद्धि (aśuddhi) + क्षये (kṣaye) + ज्ञान (jñāna) + दीप्तिः (dīptiḥ) + विवेक (viveka) + ख्यातेः (khyāteḥ)',
+                chitta: 'By practicing the limbs of yoga, impurities are destroyed and my wisdom radiates, leading to discriminative discernment',
+                english: 'By practicing the limbs of yoga, impurities are destroyed and wisdom radiates, leading to discriminative discernment',
+                red: 'On the destruction (kṣaye) of impurity (aśuddhi) through the practice (anuṣṭhānāt) of the limbs (aṅga) of Yoga (yoga), (there emerges) the Light (dīptiḥ) of Knowledge (jñāna) culminating (ā) in discriminative (viveka) knowledge (khyāteḥ)'
+                },
+    {
+                verse: '2.29',
+                original: 'यमनियमासनप्राणायामप्रत्याहारधारणाध्यानसमाधयोऽष्टावङ्गानि',
+                sanskritSimplified: 'यम (yama) + नियम (niyama) + आसन (āsana) + प्राणायाम (prāṇāyāma) + प्रत्याहार (pratyāhāra) + धारण (dhāraṇa) + ध्यान (dhyāna) + समाधयः (samādhayaḥ) + अष्ट (aṣṭa) + अङ्गानि (aṅgāni)',
+                chitta: 'The eight limbs of yoga are yama, niyama, asana, pranayama, pratyahara, dharana, dhyana, and samadhi',
+                english: 'The eight limbs of yoga are yama, niyama, asana, pranayama, pratyahara, dharana, dhyana, and samadhi',
+                red: 'Yama (yama), Niyama (niyama), Āsana (āsana), Prāṇāyāma (prāṇāyāma), Pratyāhāra (pratyāhāra), Dhāraṇā (dhāraṇā), Dhyāna (dhyāna) (and) Samādhi --samādhi-- (samādhayaḥ) (are) the eight (aṣṭau) limbs --aṅga-- (of Yoga) (aṅgāni) --after this statement, Patañjali will describe each of them in detail'
+                },
+    {
+                verse: '2.30',
+                original: 'अहिंसासत्यास्तेयब्रह्मचर्यापरिग्रहा यमाः',
+                sanskritSimplified: 'अहिंसा (ahiṁsā) + सत्य (satya) + अस्तेय (asteya) + ब्रह्मचर्य (brahmacarya) + अपरिग्रहाः (aparigrahāḥ) + यमाः (yamāḥ)',
+                chitta: 'The restraints of non-violence, truthfulness, non-stealing, celibacy, and non-possessiveness are universal vows',
+                english: 'The restraints of non-violence, truthfulness, non-stealing, celibacy, and non-possessiveness are universal vows',
+                red: 'Non-injury --harmlessness-- (ahiṁsā), Veracity --truthfulness-- (satya), Abstention from stealing (asteya), Continence --dwelling in Brahma-- (brahmacarya) and Non-possession --abstinence from avariciousness/covetousness; aparigraha-- (aparigrahāḥ) (are the five) Yama-s or Restraints (yamāḥ)'
+                },
+    {
+                verse: '2.31',
+                original: 'जातिदेशकालसमयानवच्छिन्नाः सार्वभौमा महाव्रतम्',
+                sanskritSimplified: 'जाति (jāti) + देश (deśa) + काल (kāla) + समय (samaya) + अनवच्छिन्नाः (anavacchinnāḥ) + सार्वभौमाः (sārvabhaumāḥ) + महाव्रतम् (mahāvratam)',
+                chitta: 'These vows are not restricted by class, place, time, or circumstance',
+                english: 'These vows are not restricted by class, place, time, or circumstance',
+                red: '(Those Yama-s or Restraints turn into) a great (mahā) vow (vratam) (when they become) universal (sārvabhaumāḥ) and unrestricted (anavacchinnāḥ) by (any consideration of) class (jāti), place (deśa), time (kāla) or customary duty --""established custom and conventional rule or usage"" are also valid translations for ""samaya""-- (samaya)'
+                },
+    {
+                verse: '2.32',
+                original: 'शौचसन्तोषतपःस्वाध्यायेश्वरप्रणिधानानि नियमाः',
+                sanskritSimplified: 'शौच (śauca) + सन्तोष (santoṣa) + तपः (tapaḥ) + स्वाध्याय (svādhyāya) + ईश्वर (īśvara) + प्रणिधानानि (praṇidhānāni) + नियमाः (niyamāḥ)',
+                chitta: 'Observances of cleanliness, contentment, austerity, self-study, and surrender to Ishvara are necessary',
+                english: 'Observances of cleanliness, contentment, austerity, self-study, and surrender to Ishvara are necessary',
+                red: 'Cleanliness (śauca), Contentment (santoṣa), Austerity or Penance (tapas), Study and Recitation of Sacred Scriptures (svādhyāya), and Devotion --praṇidhāna-- (praṇidhānāni) to the (Supreme) Lord (īśvara) (are the five) Niyama-s or Observances (niyamāḥ)'
+                },
+    {
+                verse: '2.33',
+                original: 'वितर्कबाधने प्रतिपक्षभावनम्',
+                sanskritSimplified: 'वितर्क (vitarka) + बाधने (bādhane) + प्रतिपक्ष (pratipakṣa) + भावनम् (bhāvanam)',
+                chitta: 'When disturbed by negative thoughts, I cultivate the opposite',
+                english: 'When disturbed by negative thoughts, cultivate the opposite',
+                red: 'On the inhibition (bādhane) (of those Yama-s and Niyama-s) by (erroneous) ways of thinking and feeling (vitarka), (a Yogī should cultivate) contemplation (bhāvanam) on the opposites (pratipakṣa)'
+                },
+    {
+                verse: '2.34',
+                original: 'वितर्का हिंसादयः कृतकारितानुमोदिता लोभक्रोधमोहपूर्वका मृदुमध्याधिमात्रा दुःखाज्ञानानन्तफला इति प्रतिपक्षभावनम्',
+                sanskritSimplified: 'वितर्काः (vitarkāḥ) + हिंसादयः (hiṁsādayaḥ) + कृत (kṛta) + कारिता (kāritā) + अनुमोदिता (anumoditā) + लोभ (lobha) + क्रोध (krodha) + मोह (moha) + पूर्वकाः (pūrvakāḥ) + मृदु (mṛdu) + मध्यम (madhyama) + अधिमात्राः (adimātrāḥ) + दुःख (duḥkha) + अज्ञान (ajñāna) + अनन्तफलाः (anantaphalāḥ) + इति (iti) + प्रतिपक्षभावनम् (pratipakṣabhāvanam)',
+                chitta: 'Thoughts of violence, whether done, caused to be done, or approved, and whether motivated by greed, anger, or delusion, and whether mild, moderate, or intense, result in endless suffering and ignorance. Thus, I cultivate the opposite thoughts',
+                english: 'Thoughts of violence, whether done, caused to be done, or approved, and whether motivated by greed, anger, or delusion, and whether mild, moderate, or intense, result in endless suffering and ignorance. Thus, cultivate the opposite thoughts',
+                red: '(Such actions as) injury (hiṁsā), etc. (ādayaḥ) proceeding from (erroneous) ways of thinking and feeling (vitarkāḥ) (are as follows): (I) those which are performed by oneself (kṛta), got done by another (kārita) or approved --anumodita-- (anumoditāḥ); (II) those which are preceded (pūrvakāḥ) (either) by covetousness (lobha), wrath (krodha), or delusion (moha). (Moreover, the aforesaid actions can be either) mild (mṛdu), moderate (madhya) or intense --adhimātra-- (adhimātrāḥ). ""(They are) the unending (ananta) fruits or consequences (phalāḥ) (resulting from) pain (duḥkha) (and) ignorance (ajñāna)"" --""iti"" stands for inverted commas-- is the opposite (pratipakṣa) thought (bhāvanam)'
+                },
+    {
+                verse: '2.35',
+                original: 'अहिंसाप्रतिष्ठायां तत्सन्निधौ वैरत्यागः',
+                sanskritSimplified: 'अहिंसा (ahiṁsā) + प्रतिष्ठायां (pratiṣṭhāyāṁ) + तत्सन्निधौ (tatsannidhau) + वैर (vaira) + त्यागः (tyāgaḥ)',
+                chitta: 'When I am established in non-violence, hostility ceases in my presence',
+                english: 'When established in non-violence, hostility ceases in  ones presence',
+                red: 'On the establishment (pratiṣṭhāyām) of Ahiṁsā or Non-injury (ahiṁsā) (in a Yogī, there is) cessation (tyāgaḥ) of hostility (vaira) (in one) coming close (sannidhau) to him (tad)'
+                },
+    {
+                verse: '2.36',
+                original: 'सत्यप्रतिष्ठायां क्रियाफलाश्रयत्वम्',
+                sanskritSimplified: 'सत्य (satya) + प्रतिष्ठायां (pratiṣṭhāyāṁ) + क्रिया (kriyā) + फल (phala) + आश्रयत्वम् (āśrayatvam)',
+                chitta: 'When I am firmly established in truthfulness, my actions and their results become aligned',
+                english: 'When established in truthfulness, actions and their results become aligned',
+                red: 'On the establishment (pratiṣṭhāyām) of Satya or Truthfulness (satya) (in the Yogī), a state of connection (āśrayatvam) between (his) actions --as the general idea expressed by any verb-- (kriyā) and the (resulting) fruits or consequences (phala) (arises) --i.e. ""all that the abovementioned Yogī says will come true in the long run'
+                },
+    {
+                verse: '2.37',
+                original: 'अस्तेयप्रतिष्ठायां सर्वरत्नोपस्थानम्',
+                sanskritSimplified: 'अस्तेय (asteya) + प्रतिष्ठायां (pratiṣṭhāyāṁ) + सर्व (sarva) + रत्न (ratna) + उपस्थानम् (upasthānam)',
+                chitta: 'When I am established in non-stealing, all treasures present themselves to me',
+                english: 'When established in non-stealing, all treasures present themselves',
+                red: 'On the establishment (pratiṣṭhāyām) of Asteya or Non-stealing (asteya) (in the Yogī), all (sarva) jewels (ratna) stand near in order to serve (upasthānam) (him)'
+                },
+    {
+                verse: '2.38',
+                original: 'ब्रह्मचर्यप्रतिष्ठायां वीर्यलाभः',
+                sanskritSimplified: 'ब्रह्मचर्य (brahmacarya) + प्रतिष्ठायां (pratiṣṭhāyāṁ) + वीर्य (vīrya) + लाभः (lābhaḥ)',
+                chitta: 'When I am established in celibacy, I gain great vitality',
+                english: 'When established in celibacy, great vitality is gained',
+                red: 'On the establishment (pratiṣṭhāyām) of Brahmacarya or Continence (brahmacarya) (in that Yogī, there is) acquisition (lābhaḥ) of Vīrya --lit. ""energy, vigor, stamina, strength, etc.""-- (vīrya)'
+                },
+    {
+                verse: '2.39',
+                original: 'अपरिग्रहस्थैर्ये जन्मकथन्तासम्बोधः',
+                sanskritSimplified: 'अपरिग्रह (aparigraha) + स्थैर्ये (sthairye) + जन्म (janma) + कथन्ता (kathantā) + सम्बोधः (sambodhaḥ)',
+                chitta: 'When I am established in non-possessiveness, I understand the purpose of my past and future lives',
+                english: 'When established in non-possessiveness, the purpose of past and future lives is understood',
+                red: 'When (that very Yogī) stands firmly (sthairye) in Aparigraha or Non-possession (aparigraha), full knowledge (sambodhaḥ) of ""the how, the what state?"" (kathantā) about (his past, present and future) existences (janma) (arises)'
+                },
+    {
+                verse: '2.40',
+                original: 'शौचात्स्वाङ्गजुगुप्सा परैरसंसर्गः',
+                sanskritSimplified: 'शौचात् (śaucāt) + स्वाङ्ग (svāṅga) + जुगुप्सा (jugupsā) + परैः (paraiḥ) + असंसर्गः (asaṁsargaḥ)',
+                chitta: 'From cleanliness, I develop distaste for my own body and non-contact with others',
+                english: 'From cleanliness, distaste for  ones own body and non-contact with others is developed',
+                red: 'From Śauca or Cleanliness (śaucāt), dislike (jugupsā) toward  ones own (sva) body (aṅga) (arises, and consequently) unconcernedness to contact (asaṁsargaḥ) with other (bodies) (paraiḥ) (is also developed)'
+                },
+    {
+                verse: '2.41',
+                original: 'सत्त्वशुद्धिसौमनस्यैकाग्र्येन्द्रियजयात्मदर्शनयोग्यत्वानि च',
+                sanskritSimplified: 'सत्त्व (sattva) + शुद्धि (śuddhi) + सौमनस्य (saumanasya) + ऐकाग्र्य (aikāgrya) + इन्द्रिय (indriya) + जय (jaya) + आत्म (ātma) + दर्शन (darśana) + योग्यत्वानि (yogyatvāni) + च (ca)',
+                chitta: 'From purity, I gain clarity of mind, cheerfulness, one-pointedness, control of the senses, and fitness for self-realization',
+                english: 'From purity, clarity of mind, cheerfulness, one-pointedness, control of the senses, and fitness for self-realization are gained',
+                red: '(Besides, from Śauca or Cleanliness,) purity (śuddhi) of nature or disposition (sattva), satisfaction of mind (saumanasya), one-pointedness (aikāgrya), conquest (jaya) of the Indriya-s --5 Jñānendriya-s or powers of perception, and 5 Karmendriya-s or powers of action-- (indriya) (and) fitness or ability --yogyatva-- (yogyatvāni) for perceiving (darśana) the Self (ātma), (are) also (ca) (developed)'
+                },
+    {
+                verse: '2.42',
+                original: 'सन्तोषादनुत्तमसुखलाभः',
+                sanskritSimplified: 'सन्तोषात् (santoṣāt) + अनुत्तम (anuttama) + सुख (sukha) + लाभः (lābhaḥ)',
+                chitta: 'From contentment, I attain supreme happiness',
+                english: 'From contentment, supreme happiness is attained',
+                red: 'From Santoṣa or Contentment (santoṣāt); (there is) acquisition (lābhaḥ) of unsurpassed (anuttama) happiness (sukha)'
+                },
+    {
+                verse: '2.43',
+                original: 'कायेन्द्रियसिद्धिरशुद्धिक्षयात्तपसः',
+                sanskritSimplified: 'काय (kāya) + इन्द्रिय (indriya) + सिद्धिः (siddhiḥ) + अशुद्धि (aśuddhi) + क्षयात् (kṣayāt) + तपसः (tapasaḥ)',
+                chitta: 'From austerity, I destroy impurities and gain mastery over my body and senses',
+                english: 'From austerity, impurities are destroyed and mastery over the body and senses is gained',
+                red: 'Perfection (siddhiḥ) of body (kāya) and Indriya-s --5 Jñānendriya-s or powers of perception, and 5 Karmendriya-s or powers of action-- (indriya) (is acquired) through Tapas or Austerity (tapasaḥ), which brings about destruction (kṣayāt) of impurities (aśuddhi)'
+                },
+    {
+                verse: '2.44',
+                original: 'स्वाध्यायादिष्टदेवतासम्प्रयोगः',
+                sanskritSimplified: 'स्वाध्यायात् (svādhyāyāt) + इष्ट (iṣṭa) + देवता (devatā) + सम्प्रयोगः (saṁprayogaḥ)',
+                chitta: 'From self-study, I gain communion with my chosen deity',
+                english: 'From self-study, communion with the chosen deity is gained',
+                red: 'Union or communion (samprayogaḥ) with the desired or chosen (iṣṭa) deity (devatā) (is obtained) from Svādhyāya or Study and Recitation of Sacred Scriptures (svādhyāyāt)'
+                },
+    {
+                verse: '2.45',
+                original: 'समाधिसिद्धिरीश्वरप्रणिधानात्',
+                sanskritSimplified: 'समाधि (samādhi) + सिद्धिः (siddhiḥ) + ईश्वर (īśvara) + प्रणिधानात् (praṇidhānāt)',
+                chitta: 'From surrender to Ishvara, I attain perfection in meditation',
+                english: 'From surrender to Ishvara, perfection in meditation is attained',
+                red: 'Perfection or complete attainment (siddhiḥ) of Samādhi or Perfect Concentration (samādhi) (is achieved) through devotion (praṇidhānāt) to the Lord (īśvara)'
+                },
+    {
+                verse: '2.46',
+                original: 'स्थिरसुखमासनम्',
+                sanskritSimplified: 'स्थिर (sthira) + सुखम् (sukham) + आसनम् (āsanam)',
+                chitta: 'My posture is stable and comfortable',
+                english: 'The posture should be stable and comfortable',
+                red: 'Posture (āsanam) (should be) firm (sthira) and agreeable --pleasant-- (sukham)'
+                },
+    {
+                verse: '2.47',
+                original: 'प्रयत्नशैथिल्यानन्तसमापत्तिभ्याम्',
+                sanskritSimplified: 'प्रयत्न (prayatna) + शैथिल्य (śaithilya) + अनन्त (ananta) + समापत्तिभ्याम् (samāpattibhyām)',
+                chitta: 'By relaxation of effort and absorption into the infinite, I perfect my posture',
+                english: 'By relaxation of effort and absorption into the infinite, the posture is perfected',
+                red: 'By means of relaxation (śaithilya) of effort (prayatna) and absorption --samāpatti-- (samāpattibhyām) in the infinite --i.e. ""in the infinite space around""-- (ananta) (Āsana or Posture is perfected)'
+                },
+    {
+                verse: '2.48',
+                original: 'ततो द्वन्द्वानभिघातः',
+                sanskritSimplified: 'ततः (tataḥ) + द्वन्द्व (dvandva) + अनभिघातः (anabhighātaḥ)',
+                chitta: 'From this, I am undisturbed by the dualities',
+                english: 'From this, one is undisturbed by the dualities',
+                red: 'From that (tatah), (there is) immunity (anabhighātaḥ) with regard to the pairs of opposites (dvandva)'
+                },
+    {
+                verse: '2.49',
+                original: 'तस्मिन्सति श्वासप्रश्वासयोर्गतिविच्छेदः प्राणायामः',
+                sanskritSimplified: 'तस्मिन (tasmin) + सति (sati) + श्वास (śvāsa) + प्रश्वासयोः (praśvāsayoḥ) + गति (gati) + विच्छेदः (vicchedaḥ) + प्राणायामः (prāṇāyāmaḥ)',
+                chitta: 'When this is accomplished, I regulate my breath to control the flow of inhalation and exhalation, which is pranayama',
+                english: 'When this is accomplished, regulation of breath to control the flow of inhalation and exhalation is pranayama',
+                red: 'Once that (tasmin) (Āsana or Posture) has been (perfected) (sati), Prāṇāyāma (prāṇāyāmaḥ), (which) is the suspension (vicchedaḥ) of the flow (gati) of inhalation (śvāsa) and exhalation --praśvāsa-- (praśvāsayoḥ), (should be developed)'
+                },
+    {
+                verse: '2.50',
+                original: 'वाह्याभ्यन्तरस्तम्भवृत्तिः देशकालसङ्ख्याभिः परिदृष्टो दीर्घसूक्ष्मः',
+                sanskritSimplified: 'वाह्य (vāhya) + अभ्यन्तर (abhyantara) + स्तम्भ (stambha) + वृत्तिः (vṛttiḥ) + देश (deśa) + काल (kāla) + सङ्ख्याभिः (saṅkhyābhiḥ) + परिदृष्टः (paridṛṣṭaḥ) + दीर्घ (dīrgha) + सूक्ष्मः (sūkṣmaḥ)',
+                chitta: 'My breath retention, internal and external, is regulated by place, time, and number, and becomes prolonged and subtle',
+                english: 'Breath retention, internal and external, is regulated by place, time, and number, and becomes prolonged and subtle',
+                red: '(Prāṇāyāma) has (three) Operation(s) (vṛttiḥ): (1) External (vāhya), (2) Internal (ābhyantara) and (3) Suppression (stambha). (And when Prāṇāyāma is) observed (paridṛṣṭaḥ) according to space (deśa), time (kāla) and number --saṅkhyā-- (saṅkhyābhiḥ), it becomes long (dīrgha) and subtle (sūkṣmaḥ)'
+                },
+    {
+                verse: '2.51',
+                original: 'वाह्याभ्यन्तरविषयाक्षेपी चतुर्थः',
+                sanskritSimplified: 'वाह्य (vāhya) + अभ्यन्तर (abhyantara) + विषय (viṣaya) + अक्षम (akṣa) + ई (ī) + चतुर्थः (caturthaḥ)',
+                chitta: 'The fourth type of pranayama surpasses the internal and external objects',
+                english: 'The fourth type of pranayama surpasses the internal and external objects',
+                red: 'The fourth (kind of Prāṇāyāma) (caturthaḥ) transcends or excels (ākṣepī) the sphere of influence (viṣaya) of External (vāhya) and Internal (ābhyantara) (Operations)'
+                },
+    {
+                verse: '2.52',
+                original: 'ततः क्षीयते प्रकाशावरणम्',
+                sanskritSimplified: 'ततः (tataḥ) + क्षीयते (kṣīyate) + प्रकाश (prakāśa) + आवरणम् (āvaraṇam)',
+                chitta: 'From this practice, the covering of the light diminishes',
+                english: 'From this practice, the covering of the light diminishes',
+                red: 'Through that (tatah), the veil (āvaraṇam) over Prakāśa --i.e. ""over the revelation of true knowledge""-- (prakāśa) is attenuated (kṣīyate)'
+                },
+    {
+                verse: '2.53',
+                original: 'धारणासु च योग्यता मनसः',
+                sanskritSimplified: 'धारणासु (dhāraṇāsu) + च (ca) + योग्यता (yogyatā) + मनसः (manasaḥ)',
+                chitta: 'My mind becomes fit for concentration',
+                english: 'The mind becomes fit for concentration',
+                red: 'Mental (manasaḥ) fitness or aptitude (yogyatā) for the dhāraṇā-s or concentration practices (dhāraṇāsu) (is) also (ca) (developed)'
+                },
+    {
+                verse: '2.54',
+                original: 'स्वविषयासम्प्रयोगे चित्तस्य स्वरूपानुकार इवेन्द्रियाणां प्रत्याहारः',
+                sanskritSimplified: 'स्व (sva) + विषय (viṣaya) + असम्प्रयोगे (asaṁprayoge) + चित्तस्य (cittasya) + स्वरूप (svarūpa) + अनुकार (anukāra) + इव (iva) + इन्द्रियाणां (indriyāṇāṁ) + प्रत्याहारः (pratyāhāraḥ)',
+                chitta: 'Withdrawal of the senses occurs when they no longer follow external objects, but imitate the nature of the mind',
+                english: 'Withdrawal of the senses occurs when they no longer follow external objects, but imitate the nature of the mind',
+                red: 'Pratyāhāra or the Withdrawal (pratyāhāraḥ) of Indriya-s --5 Jñānendriya-s or powers of perception, and 5 Karmendriya-s or powers of action-- (indriyāṇām) (is), as it were (iva), a following (anukāraḥ) the essential nature (sva-rūpa) of mind (cittasya) (by those very Indriya-s), when separated (asamprayoge) from their (corresponding) (sva) objects (viṣaya)'
+                },
+    {
+                verse: '2.55',
+                original: 'ततः परमा वश्यतेन्द्रियाणाम्',
+                sanskritSimplified: 'ततः (tataḥ) + परमा (paramā) + वश्यता (vaśyatā) + इन्द्रियाणाम् (indriyāṇām)',
+                chitta: 'From this, I attain supreme control over my senses',
+                english: 'From this, supreme control over the senses is attained',
+                red: 'From that (Pratyāhāra or Withdrawal) (tatah), supreme (paramā) mastery or control (vaśyatā) of the Indriya-s --5 Jñānendriya-s or powers of perception, and 5 Karmendriya-s or powers of action-- (indriyāṇām) (arises)'
+                },
+    
+                ],
+                3: [
+                {
+                verse: '3.1',
+                original: 'देशबन्धश्चित्तस्य धारणा',
+                sanskritSimplified: 'देश (deśa) + बन्धः (bandhaḥ) + चित्तस्य (cittasya) + धारणा (dhāraṇā)',
+                chitta: 'I focus my mind on a specific point',
+                english: 'Concentration is the binding of the mind to one place',
+                red: 'Concentration (dhāraṇā) is the minds (cittasya) fixation (bandhaḥ) on one point (deśa)'
+                },
+    {
+                verse: '3.2',
+                original: 'तत्र प्रत्ययैकतानता ध्यानम्',
+                sanskritSimplified: 'तत्र (tatra) + प्रत्यय (pratyaya) + एकतानता (ekatānatā) + ध्यानम् (dhyānam)',
+                chitta: 'My uninterrupted flow of concentration is meditation',
+                english: 'Meditation is the continuous flow of concentration',
+                red: 'In that --in Dhāraṇā-- (tatra), the continuous flow of similar (ekatānatā) mental modifications (pratyaya) is Meditation (dhyānam)'
+                },
+    {
+                verse: '3.3',
+                original: 'तदेवार्थमात्रनिर्भासं स्वरूपशून्यमिव समाधिः',
+                sanskritSimplified: 'तत् (tat) + एव (eva) + अर्थ (artha) + मात्र (mātra) + निर्भासं (nirbhāsaṁ) + स्वरूप (svarūpa) + शून्यम् (śūnyam) + इव (iva) + समाधिः (samādhiḥ)',
+                chitta: 'My meditation, where only the essence of the object shines forth, is samadhi',
+                english: 'Samadhi is the state where the mind becomes devoid of its own nature and only the object of meditation shines forth',
+                red: 'Perfect Concentration (samādhiḥ) is just (eva) that (condition) (tad) in which only (mātra) the object (of concentration) (artha) shines forth (nirbhāsam), and the self (sva-rūpa) is absent (śūnyam), as it were (iva)'
+                },
+    {
+                verse: '3.4',
+                original: 'त्रयमेकत्र संयमः',
+                sanskritSimplified: 'त्रयम् (trayam) + एकत्र (ekatra) + संयमः (saṁyamaḥ)',
+                chitta: 'Concentration, meditation, and samadhi practiced together is called samyama',
+                english: 'The three together (concentration, meditation, and samadhi) are called samyama',
+                red: 'The (abovementioned) triad --i.e. Dhāraṇā, Dhyāna and Samādhi-- (trayam) on a single object (ekatra) is Saṁyama (saṁyamaḥ)'
+                },
+    {
+                verse: '3.5',
+                original: 'तज्जयात्प्रज्ञालोकः',
+                sanskritSimplified: 'तत् (tat) + जयात् (jayāt) + प्रज्ञा (prajñā) + आलोकः (ālokaḥ)',
+                chitta: 'By mastering samyama, I attain the light of wisdom',
+                english: 'By mastering samyama, the light of wisdom dawns',
+                red: 'Through the conquest (jayāt) of that --i.e. Saṁyama-- (tad), the Light (ālokaḥ) of Wisdom (prajñā) (dawns)'
+                },
+    {
+                verse: '3.6',
+                original: 'तस्य भूमिषु विनियोगः',
+                sanskritSimplified: 'तस्य (tasya) + भूमिषु (bhūmiṣu) + विनियोगः (viniyogaḥ)',
+                chitta: 'I apply samyama in stages',
+                english: 'Samyama should be applied in stages',
+                red: '(There must be) application (viniyogaḥ) of that (tasya) to the stages (of the practice) (bhūmiṣu)'
+                },
+    {
+                verse: '3.7',
+                original: 'त्रयमन्तरङ्गं पूर्वेभ्यः',
+                sanskritSimplified: 'त्रयम् (trayam) + अन्तरङ्गम् (antaraṅgam) + पूर्वेभ्यः (pūrvebhyaḥ)',
+                chitta: 'The three are more intimate practices than the preceding ones',
+                english: 'The three (dharana, dhyana, and samadhi) are more intimate practices than the preceding ones',
+                red: 'The triad (of Dhāraṇā, Dhyāna and Samādhi) (trayam) (are more) internal (practices) (antaraṅgam) than the previous ones --i.e. Yama, Niyama, Āsana, Prāṇāyāma and Pratyāhāra-- (pūrvebhyaḥ) (within the framework of Samprajñātayoga)'
+                },
+    {
+                verse: '3.8',
+                original: 'तदपि वहिरङ्गं निर्वीजस्य',
+                sanskritSimplified: 'तद् (tad) + अपि (api) + बाहिरङ्गम् (bāhiraṅgam) + निर्वीजस्य (nirvījasya)',
+                chitta: 'Even these are external compared to the seedless samadhi',
+                english: 'Even these are external compared to the seedless samadhi',
+                red: '(In turn,) that very triad (tad api) is external (vahiraṅgam) in respect of Nirvīja or seedless concentration --i.e. Asamprajñātayoga-- (nirvījasya)'
+                },
+    {
+                verse: '3.9',
+                original: 'व्युत्थाननिरोधसंस्कारयोरभिभवप्रादुर्भावौ निरोधक्षणचित्तान्वयो निरोधपरिणामः',
+                sanskritSimplified: 'व्युत्थान (vyutthāna) + निरोध (nirodha) + संस्कारयोः (saṁskārayor) + अभिभव (abhibhava) + प्रादुर्भावौ (prādurbhāvau) + निरोध (nirodha) + क्षण (kṣaṇa) + चित्तान्वयः (cittānvayaḥ) + निरोधपरिणामः (nirodha-pariṇāmaḥ)',
+                chitta: 'As I subdue (abhibhava) the impressions of the active mind (vyutthāna) and manifest (prādurbhāvau) the impressions of restraint (nirodha), my mind (citta) undergoes transformation (pariṇāmaḥ) towards restraint (nirodha) with every moment (kṣaṇa)',
+                english: 'The subjugation of the latent impressions of the active mind and the manifestation of the impressions of the restrained mind, occurring at every moment of restraint, is the transformation of the mind towards restraint',
+                red: 'The subjugation (abhibhava) of the latent impression(s) --saṁskāra-- (saṁskārayoḥ) of the manifest state --i.e. ""Vyutthāna"" or the ordinary state of consciousness in which there is mental fluctuation-- (vyutthāna) and the appearance --prādurbhāva-- (prādurbhāvau) of the latenci(es) --saṁskāra-- (saṁskārayoḥ) of the arrested state of mind (nirodha) (is) the mutation (pariṇāmaḥ) of (that very) arrested state of mind (nirodha). (This mutation) is linked (anvayaḥ) to the mind (citta) at (every) moment (kṣaṇa) of that arrested state of mind (nirodha)'
+                },
+    {
+                verse: '3.10',
+                original: 'तस्य प्रशान्तवाहिता संस्कारात्',
+                sanskritSimplified: 'तस्य (tasya) + प्रशान्तवाहिता (praśāntavāhitā) + संस्कारात् (saṁskārāt)',
+                chitta: 'Through my latent impressions , I abide in the continuous and undisturbed state of tranquility',
+                english: 'Through the latent impressions of that state, a continuous and undisturbed flow of tranquility is brought about',
+                red: 'Through the latent impression(s) (saṁskārāt) of that (arrested state of mind) (tasya), a continuous undisturbed state of mental tranquility (praśānta-vāhitā) (is brought about and kept)'
+                },
+    {
+                verse: '3.11',
+                original: 'सर्वार्थतैकाग्रतयोः क्षयोदयौ चित्तस्य समाधिपरिणामः',
+                sanskritSimplified: 'तस्य (tasya) + सप्तधा (saptadhā) + प्रान्तभूमिः (prāntabhūmiḥ) + प्रज्ञा (prajñā)',
+                chitta: 'As distractions (sarvārthatā) diminish (kṣaya) and one-pointedness (ekāgratā) rises (udaya) within me (cittasya), this transformation (pariṇāmaḥ) reflects my state of samadhi (samādhipariṇāmaḥ)',
+                english: 'The transformation of the mind, characterized by the subsiding of distractions and the rise of one-pointedness, is the result of samadhi',
+                red: 'Diminution (kṣaya) of attention to all (objects) (sarva-arthatā) and the emergence/development --udaya-- (udayau) of one-pointedness --ekāgratā-- (ekāgratayoḥ) (is) the mutation (pariṇāmaḥ) of Samādhi --perfect concentration or absorption-- (samādhi) of mind (cittasya)'
+                },
+    {
+                verse: '3.12',
+                original: ' ततः पुनः शान्तोदितौ तुल्यप्रत्ययौ चित्तस्यैकाग्रतापरिणामः',
+                sanskritSimplified: 'ततः (tataḥ) + पुनः (punaḥ) + शान्त (śānta) + उदितौ (uditau) + तुल्यप्रत्ययौ (tulyapratyayau) + चित्तस्य (cittasya) + एकाग्रता (ekāgratā) + परिणामः (pariṇāmaḥ)',
+                chitta: 'Then again, the transformation of the mind, where the past and present impressions are of the same kind, is the result of one-pointedness',
+                english: 'Then again, the transformation of the mind, where the past and present impressions are of the same kind, is the result of one-pointedness',
+                red: 'There (tatah) again (punar) --i.e. ""during Samādhi""--, the past (śānta) modification --pratyaya-- (pratyayau) being the same (tulya) as the present --údita-- (uditau) one --i.e. pratyaya-- (pratyayau), (occurs) the mutation (pariṇāmaḥ) of the one-pointed state (ekāgratā) of the mind (cittasya)'
+                },
+    {
+                verse: '3.13',
+                original: 'एतेन भूतेन्द्रियेषु धर्मलक्षणावस्थापरिणामा व्याख्याताः',
+                sanskritSimplified: 'एतेन (etena) + भूत (bhūta) + इन्द्रियेषु (indriyeṣu) + धर्म (dharma) + लक्षण (lakṣaṇa) + अवस्थ (avasthā) + परिणामाः (pariṇāmāḥ) + व्याख्याताः (vyākhyātāḥ)',
+                chitta: 'Through this understanding (etena), I explain (vyākhyātāḥ) the transformations (pariṇāmā) in the elements (bhūta) and senses (indriyeṣu), in terms of their characteristics (dharma), changes in condition (lakṣaṇa), and states (avasthā)',
+                english: 'By this, the transformations in the elements and senses, in terms of characteristics, changes in condition, and their states, are explained',
+                red: 'By means of this --i.e. ""through the previous exposition about the three mutations mentioned in the 9th, 11th and 12th aphorisms""-- (etena), the transformations (pariṇāmā) in the elements (bhūta) and senses (indriyeṣu), concerning their characteristics (dharma), conditions (lakṣaṇa), and states (avasthā), are explained (vyākhyātāḥ)'
+                },
+    {
+                verse: '3.14',
+                original: 'शान्त (śānta) + उदित (udita) + अव्यपदेश्य (avyapadeśya) + धर्म (dharma) + अनुपाती (anupātī) + धर्मी (dharmī)',
+                chitta: 'The substratum (dharmī) of a thing within me (anupātī) follows the transformations (dharmānupātī) of subsiding (śānta), rising (udita), and undefined (avyapadeśya) states',
+                english: 'The substratum (dharmī) follows (anupātī) the transformations (dharmānupātī) of subsiding (śānta), rising (udita), and undefined (avyapadeśya) states',
+                red: 'The substratum (dharmī) follows (anupātī) the transformations (dharmānupātī) of subsiding (śānta), rising (udita), and undefined (avyapadeśya) states'
+                },
+    {
+                verse: '3.15',
+                original: 'क्रमान्यत्वं परिणामान्यत्वे हेतुः',
+                sanskritSimplified: 'क्रम (krama) + अन्यत्वं (anyatvam) + परिणाम (pariṇāma) + अन्यत्वे (anyatve) + हेतुः (hetuḥ)',
+                chitta: 'The cause of the differences in transformations is the difference in their sequence',
+                english: 'The differences (anyatvaṃ) in my transformations (pariṇāmānyatve) arise due to the differences (hetuḥ) in their sequence (kramā)',
+                red: 'The cause (hetuḥ) of the differences (anyatvaṃ) in transformations (pariṇāmānyatve) is the sequence (kramā) in which they occur'
+                },
+    {
+                verse: '3.16',
+                original: 'परिणामत्रयसंयमादतीतानागतज्ञानम्',
+                sanskritSimplified: 'परिणाम (pariṇāma) + त्रय (traya) + संयमात् (saṁyamāt) + अतीत (atīta) + अनागत (anāgata) + ज्ञानम् (jñānam)',
+                chitta: 'By practicing samyama on the three transformations (of the mind), I gain knowledge of the past and future',
+                english: 'By focusing (saṁyamāt) on the threefold transformations (pariṇāma traya) within me, I gain knowledge (jñānam) of what has been (atīta) and what is yet to come (anāgata)',
+                red: 'Knowledge (jñānam) of past (atīta) (and) future (anāgata) (is achieved) through Saṁyama (saṁyamāt) on the three (traya) mutations (pariṇāma) --i.e. the mutations of essential attribute, temporal character and state as old and new'
+                },
+    {
+                verse: '3.17',
+                original: 'शब्दार्थप्रत्ययानामितरेतराध्यासात्सङ्करस्तत्प्रविभागसंयमात्सर्वभूतरुतज्ञानम्',
+                sanskritSimplified: 'शब्द (śabda) + अर्थ (artha) + प्रत्ययानाम् (pratyayānām) +  इतरेतर (itaretara) + अध्यासात् (adhyāsāt)  + सङ्करः (saṅkaraḥ) +  तत् (tat) + प्रविभाग (pravibhāga) + संयमात् (saṁyamāt) + सर्व (sarva) + भूत (bhūta) + रुत (ruta) + ज्ञानम् (jñānam)',
+                chitta: 'By practicing samyama on the distinction between word, meaning, and knowledge, I gain the understanding of all creatures sounds',
+                english: 'By practicing samyama on the distinction between word, meaning, and knowledge, understanding of all creatures sounds arises',
+                red: 'By practicing samyama (saṁyamāt) on the interrelations (itaretara adhyāsāt) between word (śabda), meaning (artha), and knowledge (pratyayānām), the understanding (jñānam) of the sounds (ruta) of all beings (sarvabhūta) arises'
+                },
+    {
+                verse: '3.18',
+                original: 'संस्कारसाक्षात्करणात्पूर्वजातिज्ञानम्',
+                sanskritSimplified: 'संस्कार (saṁskāra) + साक्षात्करणात् (sākṣātkaraṇāt) + पूर्व (pūrva) + जाति (jāti) + ज्ञानम् (jñānam)',
+                chitta: 'By direct perception of my own mental impressions, I gain knowledge of my past lives',
+                english: 'By direct perception of mental impressions, knowledge of past lives arises',
+                red: 'Knowledge (jñānam) of previous (pūrva) births (jāti) (is attained) through the realization (sākṣātkaraṇāt) of latent impressions (saṁskāra)'
+                },
+    {
+                verse: '3.19',
+                original: 'प्रत्ययस्य परचित्तज्ञानम्',
+                sanskritSimplified: 'प्रत्ययस्य (pratyayasya) + पर (para) + चित्त (citta) + ज्ञानम् (jñānam)',
+                chitta: 'Knowledge of another mind is obtained through samyama on the mental impressions',
+                english: 'By focusing (saṁyamāt) on the impressions (pratyayasya) within, I gain knowledge (jñānam) of another mind (para citta)',
+                red: 'By practicing samyama (saṁyamāt) on mental impressions (pratyayasya), knowledge (jñānam) of another mind (para citta) arises'
+                },
+    {
+                verse: '3.20',
+                original: 'न च तत्सालम्बनं तस्याविषयीभूतत्वात्',
+                sanskritSimplified: 'न (na) + च (ca) + तत् (tat) + सालम्बनं (sālambanaṁ) + तस्य (tasya) + अविषयीभूतत्वात् (aviṣayībhūtatvāt)',
+                chitta: 'Because it is not an object of knowledge, it cannot be an object of concentration',
+                english: 'And it is not an object of concentration because it is not an object of knowledge',
+                red: '(However,) the basis or support (sālambanam) of that --i.e. ""of the aforesaid notions""-- (tad) certainly (ca) does not (na) (come to get known by the Yogī practicing Saṁyama on the notions) because it is (bhūtatvāt) out of reach (aviṣayī) of him (tasya) --i.e. it is not a perceivable object for that Yogī'
+                },
+    {
+                verse: '3.21',
+                original: 'कायरूपसंयमात्तद्ग्राह्यशक्तिस्तम्भे चक्षुःप्रकाशासम्प्रयोगेऽन्तर्धानम्',
+                sanskritSimplified: 'काय (kāya) + रूप (rūpa) + संयमात् (saṁyamāt) + तत् (tat) + ग्राह्य (grāhya) + शक्ति (śakti) + स्तम्भे (stambhe) + चक्षुः (cakṣuḥ) + प्रकाश (prakāśa) + असम्प्रयोगे (asamprayoge) + अन्तर्धानम् (antardhānam)',
+                chitta: 'By practicing samyama on the form of the body, I become invisible to others',
+                english: 'By practicing samyama on the form of the body, one ceases to be visible to others as the power of perception is disconnected from the light of the eyes',
+                red: 'On the suppression (stambhe) of the property (śakti) of perceptibility (grāhya) pertaining to that --i.e. to the body-- (tad) through Saṁyama (saṁyamāt) on the (visible) form (rūpa) of (that very) body (kāya), when the Yogī has (thus) gone beyond (asamprayoge) the range of the eyes (cakṣuḥ-prakāśa), (there is) invisibility (antardhānam)'
+                },
+    {
+                verse: '3.22',
+                original: 'सोपक्रमं निरुपक्रमं च कर्म तत्संयमादपरान्तज्ञानमरिष्टेभ्यो वा',
+                sanskritSimplified: 'सोपक्रमं (sopakramaṁ) + निरुपक्रमं (nirupakramaṁ) + च (ca) + कर्म (karma) + तत्संयमात् (tatsaṁyamāt) + अपरान्तज्ञानम् (aparāntajñānam) + अरिष्टेभ्यः (ariṣṭebhyaḥ) + वा (vā)',
+                chitta: 'By practicing samyama on my karma, I gain knowledge of my death',
+                english: 'By practicing samyama on actions, whether immediate or postponed, one gains knowledge of the time of death',
+                red: 'Karma --i.e. action and its inherent latent impressions-- (karma) (is of two kinds:) Sopakrama --i.e. fast in fructifying-- (sopakramam) and (ca) Nirupakrama --i.e. slow in fructifying-- (nirupakramam). By means of Saṁyama (saṁyamāt) on that (karma) (tad) or (vā) through the signs of approaching death (ariṣṭebhyaḥ), knowledge (jñānam) of the latter end --i.e. ""death""-- (aparānta) (is achieved)'
+                },
+    {
+                verse: '3.23',
+                original: 'मैत्र्यादिषु बलानि',
+                sanskritSimplified: 'मैत्र्यादिषु (maitryādiṣu) + बलानि (balāni)',
+                chitta: 'By practicing samyama on friendliness, I gain strength',
+                english: 'By practicing samyama on friendliness and other virtues, strength is gained',
+                red: '(Through Saṁyama) on friendship (maitryā) and so on (ādiṣu), (different kinds of) strengths (balāni) (are acquired)'
+                },
+    {
+                verse: '3.24',
+                original: 'बलेषु हस्तिबलादीनि',
+                sanskritSimplified: 'बलेषु (baleṣu) + हस्तिबलादीनि (hastibalādīni)',
+                chitta: 'By practicing samyama on strength, I gain the strength of an elephant',
+                english: 'By practicing samyama on strength, one acquires the strength of an elephant',
+                red: '(Through Saṁyama) on (various) strengths (baleṣu), the strength (bala) of an elephant (hasti), etc. (ādīni) (may be attained)'
+                },
+    {
+                verse: '3.25',
+                original: 'प्रवृत्त्यालोकन्यासात्सूक्ष्मव्यवहितविप्रकृष्टज्ञानम्',
+                sanskritSimplified: 'प्रवृत्त्यालोकन्यासात् (pravṛttyālokanyāsāt) + सूक्ष्मव्यवहितविप्रकृष्टज्ञानम् (sūkṣmavyavahitaviprakṛṣṭajñānam)',
+                chitta: 'By practicing samyama on the subtle sense of perception, I gain knowledge of the hidden and the distant',
+                english: 'By practicing samyama on the sense of perception, one gains knowledge of the small, the hidden, and the distant',
+                red: 'By applying (nyāsāt) the light (āloka) of the supersensory perception (pravṛtti), knowledge (jñānam) of subtle (things) (sūkṣma), (objects which are) obstructed from view (vyavahita) (or) remote (viprakṛṣṭa), (is obtained)'
+                },
+    {
+                verse: '3.26',
+                original: 'भुवनज्ञानं सूर्ये संयमात्',
+                sanskritSimplified: 'भुवनज्ञानं (bhuvanajñānaṁ) + सूर्ये (sūrye) + संयमात् (saṁyamāt)',
+                chitta: 'By practicing samyama on the sun, I gain knowledge of the worlds',
+                english: 'By practicing samyama on the sun, one gains knowledge of the worlds',
+                red: 'Through Saṁyama (saṁyamāt) on the Sun --i.e. the solar entrance in the body-- (sūrye), knowledge (jñānam) of the worlds (bhuvana) (is achieved)'
+                },
+    {
+                verse: '3.27',
+                original: 'चन्द्रे ताराव्यूहज्ञानम्',
+                sanskritSimplified: 'चन्द्रे (candre) + ताराव्यूहज्ञानम् (tārāvyūhajñānam)',
+                chitta: 'By practicing samyama on the moon, I gain knowledge of the arrangement of stars',
+                english: 'By practicing samyama on the moon, one gains knowledge of the arrangement of stars',
+                red: '(Through Saṁyama) on the moon --i.e. the lunar entrance in the body-- (candre), knowledge (jñānam) of the arrangements (vyūha) of stars (tārā) (is acquired)'
+                },
+    {
+                verse: '3.28',
+                original: 'ध्रुवे तद्गतिज्ञानम्',
+                sanskritSimplified: 'ध्रुवे (dhruve) + तद्गतिज्ञानम् (tadgatijñānam)',
+                chitta: 'By practicing samyama on the Pole Star, I gain knowledge of the movements of stars',
+                english: 'By practicing samyama on the Pole Star, one gains knowledge of the movements of stars',
+                red: '(Through Saṁyama) on the pole star (dhruve), knowledge (jñānam) of the movement (gati) of that --i.e. ""of the stars""-- (tad) (is got or gotten)'
+                },
+    {
+                verse: '3.29',
+                original: 'नाभिचक्रे कायव्यूहज्ञानम्',
+                sanskritSimplified: 'नाभिचक्रे (nābhicakre) + कायव्यूहज्ञानम् (kāyavyūhajñānam)',
+                chitta: 'By practicing samyama on the navel, I gain knowledge of the arrangement of the body',
+                english: 'By practicing samyama on the navel, one gains knowledge of the arrangement of the body',
+                red: '(Through Saṁyama) on the navel-cakra --i.e. ""Maṇipūra""-- (nābhi-cakre), knowledge (jñānam) of the structure and disposition (vyūha) of the body (kāya) (is obtained)'
+                },
+    {
+                verse: '3.30',
+                original: 'कण्ठकूपे क्षुत्पिपासानिवृत्तिः',
+                sanskritSimplified: 'कण्ठकूपे (kaṇṭhakūpe) + क्षुत्पिपासानिवृत्तिः (kṣutpipāsānivṛttiḥ)',
+                chitta: 'By practicing samyama on the throat, I overcome hunger and thirst',
+                english: 'By practicing samyama on the throat, one overcomes hunger and thirst',
+                red: '(Through Saṁyama) on the cavity (kūpe) of the throat (kaṇṭha), (there is) cessation (nivṛttiḥ) of hunger (kṣut) (and) thirst (pipāsā)'
+                },
+    {
+                verse: '3.31',
+                original: 'कूर्मनाड्यां स्थैर्यम्',
+                sanskritSimplified: 'कूर्मनाड्यां (kūrmanāḍyāṁ) + स्थैर्यम् (sthairyam)',
+                chitta: 'By practicing samyama on the Kurma Nadi, I gain steadiness',
+                english: 'By practicing samyama on the Kurma Nadi, one gains steadiness',
+                red: '(Through Saṁyama) on the bronchial tube (kūrmanāḍyām), calmness and firmness (sthairyam) (are achieved)'
+                },
+    {
+                verse: '3.32',
+                original: 'मूर्धज्योतिषि सिद्धदर्शनम्',
+                sanskritSimplified: 'मूर्धज्योतिषि (mūrdhajyotiṣi) + सिद्धदर्शनम् (siddhadarśanam)',
+                chitta: 'By practicing samyama on the light in the head, I gain vision of the perfected beings',
+                english: 'By practicing samyama on the light in the head, one gains vision of the perfected beings',
+                red: '(Through Saṁyama) on the coronal (mūrdha) light (jyotiṣi), (there is) perception or vision (darśanam) of the Siddha-s --i.e. not the Perfected Beings but a kind of demigods-- (siddha)'
+                },
+    {
+                verse: '3.33',
+                original: 'प्रातिभाद्वा सर्वम्',
+                sanskritSimplified: 'प्रातिभाद्वा (prātibhādvā) + सर्वम् (sarvam)',
+                chitta: 'From intuition, I gain knowledge of everything',
+                english: 'From intuition, one gains knowledge of everything',
+                red: 'Or (vā) through Prātibha --i.e. knowledge which comes to a Yogī before the attainment of discriminative knowledge-- (prātibhāt), everything (sarvam) (becomes known)'
+                },
+    {
+                verse: '3.34',
+                original: 'हृदये चित्तसंवित्',
+                sanskritSimplified: 'हृदये (hṛdaye) + चित्तसंवित् (cittasaṁvit)',
+                chitta: 'By practicing samyama on the heart, I gain knowledge of the mind',
+                english: 'By practicing samyama on the heart, knowledge of the mind arises',
+                red: '(Through Saṁyama) on the heart (hṛdaye), knowledge (saṁvid) of mind (citta) (is attained)'
+                },
+    {
+                verse: '3.35',
+                original: 'सत्त्वपुरुषयोरत्यन्तासङ्कीर्णयोः प्रत्ययाविशेषो भोगः परार्थत्वात्स्वार्थसंयमात्पुरुषज्ञानम्',
+                sanskritSimplified: 'सत्त्वपुरुषयोः (sattvapuruṣayoḥ) + अत्यन्तासङ्कीर्णयोः (atyantāsaṅkīrṇayoḥ) + प्रत्ययाविशेषः (pratyayāviśeṣaḥ) + भोगः (bhogaḥ) + परार्थत्वात् (parārthatvāt) + स्वार्थसंयमात् (svārthasaṁyamāt) + पुरुषज्ञानम् (puruṣajñānam)',
+                chitta: 'By practicing samyama on the distinction between the pure consciousness and the intellect, I gain knowledge of the purusha',
+                english: 'By practicing samyama on the distinction between the pure consciousness and the intellect, knowledge of the purusha arises',
+                red: 'Experience of pleasure or pain (bhogaḥ) (based on) a conception (pratyaya) which does not distinguish (aviśeṣaḥ) (between such) completely (atyanta) different (asaṅkīrṇayoḥ) (entities as) Buddhisattva --i.e. Buddhi or intellect having abandoned all traces of Rajas and Tamas, that is, Buddhisattva is simply a sattvic Buddhi-- (sattva) (and) Puruṣa --i.e. the real Self or Knower-- (puruṣayoḥ), exists for another --i.e. for Puruṣa-- (parārthatvāt). Through Saṁyama (saṁyamāt) on (this) Puruṣa --i.e. ones own Self-- (svārtha), knowledge (jñānam) of Puruṣa (puruṣa) (is thus obtained)'
+                },
+    {
+                verse: '3.36',
+                original: 'ततः प्रातिभश्रावणवेदनादर्शास्वादवार्ता जायन्ते',
+                sanskritSimplified: 'ततः (tataḥ) + प्रातिभ (prātibha) + श्रावण (śrāvaṇa) + वेदना (vedanā) + आदर्श (ādarśa) + आस्वाद (āsvāda) + वार्ता (vārta) + जायन्ते (jāyante)',
+                chitta: 'By practicing samyama, I develop higher sensory perceptions like intuition, hearing, touch, vision, taste, and smell',
+                english: 'From samyama arise higher sensory perceptions like intuition, hearing, touch, vision, taste, and smell',
+                red: 'From that (Saṁyama on Puruṣa) (tatah), Prātibha --a kind of intuitive knowledge-- (prātibha), Śrāvaṇa --i.e. supernatural power of hearing-- (śrāvaṇa), Vedana --i.e. supernormal power of touch-- (vedana), the Ādarśa-s --i.e. the supernatural powers of seeing-- (ādarśa), Āsvāda --i.e. supernormal power of tasting-- (āsvāda) (and) Vārtā --i.e. supernatural power of smelling-- (vārtāḥ) arise (jāyante)'
+                },
+    {
+                verse: '3.37',
+                original: 'ते समाधावुपसर्गा व्युत्थाने सिद्धयः',
+                sanskritSimplified: 'ते (te) + समाधौ (samādhau) + उपसर्गा (upasargā) + व्युत्थाने (vyutthāne) + सिद्धयः (siddhayaḥ)',
+                chitta: 'These powers are obstacles in samadhi but are attainments in the waking state',
+                english: 'These powers are obstacles in samadhi but are attainments in the waking state',
+                red: 'Those (supernormal powers) (te) are obstacles or hindrances (upasargāḥ) in Samādhi (samādhau), (but) accomplishments (siddhayaḥ) in Vyutthāna --i.e. the ordinary state of consciousness in which the mind fluctuates-- (vyutthāne)'
+                },
+    {
+                verse: '3.38',
+                original: 'बन्धकारणशैथिल्यात्प्रचारसंवेदनाच्च चित्तस्य परशरीरावेशः',
+                sanskritSimplified: 'बन्धकारण (bandhakāraṇa) + शैथिल्यात् (śaithilyāt) + प्रचार (pracāra) + संवेदनात् (saṁvedanāt) + च (ca) + चित्तस्य (cittasya) + परशरीर (paraśarīra) + आवेशः (āveśaḥ)',
+                chitta: 'By loosening the cause of bondage and by knowledge of the passage, I enter anothers body',
+                english: 'By loosening the cause of bondage and by knowledge of the passage, one can enter anothers body',
+                red: 'Through the weakening (śaithilyāt) of the cause (kāraṇa) of bondage (bandha) and (ca) complete knowledge/understanding (saṁvedanāt) of the roaming (pracāra) of mind (cittasya), (mental) penetration (āveśaḥ) into the body (śarīra) of another (para) (is possible then)'
+                },
+    {
+                verse: '3.39',
+                original: 'उदानजयाज्जलपङ्ककण्टकादिष्वसङ्ग उत्क्रान्तिश्च',
+                sanskritSimplified: 'उदानजयात् (udānajayāt) + जल (jala) + पङ्क (paṅka) + कण्टक (kaṇṭaka) + अदिषु (ādiṣu) + असङ्गः (asaṅgaḥ) + उत्क्रान्तिः (utkrāntiḥ) + च (ca)',
+                chitta: 'By mastering udana, I become unaffected by water, mud, thorns, etc., and I can levitate',
+                english: 'By mastering udana, one becomes unaffected by water, mud, thorns, etc., and can levitate',
+                red: 'By conquering (jayāt) Udāna --i.e. one of the five main vital energies-- (udāna), (there is) movement without obstacle (asaṅgaḥ) in water (jala), mud (paṅka), thorns (kaṇṭaka), etc. (ādiṣu) and (ca) exit from the body (at will) at the time of death (utkrāntiḥ)'
+                },
+    {
+                verse: '3.40',
+                original: 'समानजयाज्ज्वलनम्',
+                sanskritSimplified: 'समानजयात् (samānajayāt) + ज्वलनम् (jvalanam)',
+                chitta: 'By mastering samana, I produce heat',
+                english: 'By mastering samana, one produces heat',
+                red: 'By conquering (jayāt) Samāna --i.e. one of the five main vital energies-- (samāna), effulgence (jvalanam) (is achieved)'
+                },
+    {
+                verse: '3.41',
+                original: 'श्रोत्राकाशयोः सम्बन्धसंयमाद्दिव्यं श्रोत्रम्',
+                sanskritSimplified: 'श्रोत्राकाशयोः (śrotrākāśayoḥ) + सम्बन्धसंयमात् (sambandhasaṁyamāt) + दिव्यं (divyaṁ) + श्रोत्रम् (śrotram)',
+                chitta: 'By practicing samyama on the relationship between the ear and ether, I attain divine hearing',
+                english: 'By practicing samyama on the relationship between the ear and ether, divine hearing is attained',
+                red: 'Through Saṁyama (saṁyamāt) on the relationship (sambandha) between the (ordinary) power of hearing --i.e. Śrotendriya-- (śrotra) (and) the space --i.e. ākāśa-- (ākāśayoḥ), divine (divyam) Power of Hearing (śrotram) (is developed)'
+                },
+    {
+                verse: '3.42',
+                original: 'कायाकाशयोः सम्बन्धसंयमाल्लघुतूलसमापत्तेश्चाकाशगमनम्',
+                sanskritSimplified: 'कायाकाशयोः (kāyākāśayoḥ) + सम्बन्धसंयमात् (sambandhasaṁyamāt) + लघुतूलसमापत्तेः (laghutūlasamāpattheḥ) + च (ca) + आकाशगमनम् (ākāśagamanaṁ)',
+                chitta: 'By practicing samyama on the relationship between the body and ether and acquiring the lightness of cotton, I can move through space',
+                english: 'By practicing samyama on the relationship between the body and ether and acquiring the lightness of cotton, one can move through space',
+                red: 'By means of Saṁyama (saṁyamāt) on the relationship (sambandha) between the physical body (kāya) (and) the space --i.e. ākāśa-- (ākāśayoḥ); and also (ca) by absorption --i.e. identification with-- (samāpatteḥ) into the light (laghu) cotton (tūla), movement (gamanam) through the space (ākāśa) (is obtained) --i.e. the Yogī can fly with the help of this kind of Saṁyama'
+                },
+    {
+                verse: '3.43',
+                original: 'वहिरकल्पिता वृत्तिर्महाविदेहा ततः प्रकाशावरणक्षयः',
+                sanskritSimplified: 'वहिःकल्पिता (vahiḥkalpitā) + वृत्तिः (vṛttiḥ) + महाविदेहा (mahāvidehā) + ततः (tataḥ) + प्रकाशावरणक्षयः (prakāśāvaraṇa-kṣayaḥ)',
+                chitta: 'By practicing samyama on the external form of the body, I attain the great disembodied state and the veil over my inner light is destroyed',
+                english: 'By practicing samyama on the external form of the body, one attains the great disembodied state and the veil over the inner light is destroyed',
+                red: 'A unimagined (akalpitā) conception (vṛttiḥ) (which is held) outside (vahis), (is known as) the great (mahā) discarnate (videhā). From that --i.e. from Mahāvidehā or the great discarnate-- (tatah), (there is) removal (kṣayaḥ) of the veil (āvaraṇa) over the Light --i.e. over Buddhisattva-- (prakāśa)'
+                },
+    {
+                verse: '3.44',
+                original: 'स्थूलस्वरूपसूक्ष्मान्वयार्थवत्त्वसंयमाद्भूतजयः',
+                sanskritSimplified: 'स्थूल (sthūla) + स्वरूप (svarūpa) + सूक्ष्म (sūkṣma) + anvaya (anvaya) + arthavattva (arthavattva) + संयमात् (saṁyamāt) + भूतजयः (bhūtajayaḥ)',
+                chitta: 'By practicing samyama on the gross, essential nature, and subtle aspects of the elements, I gain mastery over them',
+                english: 'By practicing samyama on the gross, essential nature, and subtle aspects of the elements, mastery over them is gained',
+                red: 'Through Saṁyama (saṁyamāt) on the grossness (sthūla), essential nature (sva-rūpa), subtlety (sūkṣma), inherence --i.e. inherent quality-- (anvaya) (and) objectiveness (arthavattva) (of the Bhūta-s or Elements), victory (jayaḥ) over (those very) Bhūta-s or Elements (bhūta) (is secured)'
+                },
+    {
+                verse: '3.45',
+                original: 'ततोऽणिमादिप्रादुर्भावः कायसम्पत्तद्धर्मानभिघातश्च',
+                sanskritSimplified: 'ततः (tataḥ) + अणिमादि (aṇimādi) + प्रादुर्भावः (prādurbhāvaḥ) + कायसम्पत् (kāyasampat) + तद्धर्मानभिघातः (taddharmānabhighātaḥ) + च (ca)',
+                chitta: 'From this, I attain the powers of becoming small, etc., perfection of the body, and the non-obstruction of its functions',
+                english: 'From this, the powers of becoming small, etc., perfection of the body, and non-obstruction of its functions are attained',
+                red: 'From that (aforesaid Saṁyama) (tatah), (there is) manifestation (prādurbhāvaḥ) of Aṇimā --i.e. the supernormal power of minimization-- (aṇimā), etc. (ādi), bodily (kāya) perfection (sampad) and (ca) non-obstruction (anabhighātaḥ) in respect of the characteristics (dharma) of that (very body) (tad)'
+                },
+    {
+                verse: '3.46',
+                original: 'रूपलावण्यबलवज्रसंहननत्वानि कायसम्पत्',
+                sanskritSimplified: 'रूप (rūpa) + लावण्य (lāvaṇya) + बल (bala) + वज्रसंहननत्वानि (vajrasaṁhananatvāni) + कायसम्पत् (kāyasampat)',
+                chitta: 'Perfection of the body includes beauty, grace, strength, and adamantine hardness',
+                english: 'Perfection of the body includes beauty, grace, strength, and adamantine hardness',
+                red: 'Bodily (kāya) perfection (sampad) (consists of) beauty (rūpa), charm (lāvaṇya), strength (bala) (and) adamantine (vajra) solidity --saṁhananatva-- (saṁhananatvāni)'
+                },
+    {
+                verse: '3.47',
+                original: 'ग्रहणस्वरूपास्मितान्वयार्थवत्त्वसंयमादिन्द्रियजयः',
+                sanskritSimplified: 'ग्रहण (grahaṇa) + स्वरूप (svarūpa) + अस्मिता (asmitā) + anvaya (anvaya) + arthavattva (arthavattva) + संयमात् (saṁyamāt) + इन्द्रियजयः (indriyajayaḥ)',
+                chitta: 'By practicing samyama on the process of perception, the inherent nature, the sense of self, and their interconnectedness, I gain mastery over the senses',
+                english: 'By practicing samyama on the process of perception, the inherent nature, the sense of self, and their interconnectedness, mastery over the senses is gained',
+                red: 'Through Saṁyama (saṁyamāt) on receptivity (grahaṇa), essential nature (sva-rūpa), I-sense (asmitā), inherence (anvaya) (and) objectiveness (arthavattva) (of the Indriya-s --i.e. powers of perception and action--), victory (jayaḥ) over (those very) Indriya-s (indriya) (is obtained)'
+                },
+    {
+                verse: '3.48',
+                original: 'ततो मनोजवित्वं विकरणभावः प्रधानजयश्च',
+                sanskritSimplified: 'ततः (tataḥ) + मनोजवित्वं (manojavitvaṁ) + विकरणभावः (vikaraṇabhāvaḥ) + प्रधानजयः (pradhānajayaḥ) + च (ca)',
+                chitta: 'From this, I attain the speed of the mind, the ability to function without the senses, and mastery over the primary cause',
+                english: 'From this, the speed of the mind, the ability to function without the senses, and mastery over the primary cause are attained',
+                red: 'From that (aforesaid Saṁyama) (tatah), swiftness (javitvam) (as) of mind (manas), a state (bhāvaḥ) in which the organs of sense act independently of the body (vikaraṇa), and (ca) victory (jayaḥ) over Pradhāna --i.e. Prakṛti, the original source of the material universe-- (pradhāna) (are secured)'
+                },
+    {
+                verse: '3.49',
+                original: 'सत्त्वपुरुषान्यताख्यातिमात्रस्य सर्वभावाधिष्ठातृत्वं सर्वज्ञातृत्वं च',
+                sanskritSimplified: 'सत्त्वपुरुषान्यताख्यातिमात्रस्य (sattvapuruṣānyatākhyātimātrasya) + सर्वभावाधिष्ठातृत्वं (sarvabhāvādhiṣṭhātṛtvaṁ) + सर्वज्ञातृत्वं (sarvajñātṛtvaṁ) + च (ca)',
+                chitta: 'By realizing the distinction between pure consciousness and intellect, I attain omnipresence and omniscience',
+                english: 'By realizing the distinction between pure consciousness and intellect, omnipresence and omniscience are attained',
+                red: 'To one established in (discriminative) knowledge (khyāti-mātrasya) of the difference (anyatā) between Buddhisattva --i.e. sattvic Buddhi full of discriminative knowledge-- (sattva) (and) Puruṣa (puruṣa) (comes) supremacy (adhiṣṭhātṛtvam) over all (sarva) beings (bhāva) and (ca) omniscience (sarvajñātṛtvam)'
+                },
+    {
+                verse: '3.50',
+                original: 'तद्वैराग्यादपि दोषवीजक्षये कैवल्यम्',
+                sanskritSimplified: 'तद्वैराग्यादपि (tadvairāgyādapi) + दोषवीजक्षये (doṣavījākṣaye) + कैवल्यम् (kaivalyam)',
+                chitta: 'By renouncing even these powers, I attain the seedless state of absolute freedom',
+                english: 'By renouncing even these powers, the seedless state of absolute freedom is attained',
+                red: 'By renunciation (vairāgyāt) even (api) of that --i.e. of Vivekakhyāti or discriminative knowledge-- (tad), when there is destruction (kṣaye) of the seeds (vīja) of evil (doṣa), Kaivalya or complete Emancipation (kaivalyam) (is experienced)'
+                },
+    {
+                verse: '3.51',
+                original: 'स्थान्युपनिमन्त्रणे सङ्गस्मयाकरणं पुनरनिष्टप्रसङ्गात्',
+                sanskritSimplified: 'स्थान्युपनिमन्त्रणे (sthānyupanimantraṇe) + सङ्गस्मयाकरणं (saṅgasmayākaraṇaṁ) + पुनरनिष्टप्रसङ्गात् (punaraniṣṭaprasaṅgāt)',
+                chitta: 'When invited by celestial beings, I remain unentangled and non-arrogant to avoid undesirable consequences',
+                english: 'When invited by celestial beings, one should remain unentangled and non-arrogant to avoid undesirable consequences',
+                red: 'When invited (upanimantraṇe) by beings occupying a high position --i.e. celestial beings-- (sthāni), (that invitation) should not be accepted (saṅga... akaraṇam) nor should it cause (akaraṇam) conceit (smaya), since it involves the possibility (prasaṅgāt) of undesirable results (punar-aniṣṭa)'
+                },
+    {
+                verse: '3.52',
+                original: 'क्षणतत्क्रमयोः संयमाद्विवेकजं ज्ञानम्',
+                sanskritSimplified: 'क्षणतत्क्रमयोः (kṣaṇatatkramayoḥ) + संयमात् (saṁyamāt) + विवेकजं (vivekajam) + ज्ञानम् (jñānam)',
+                chitta: 'By practicing samyama on the moment and its succession, I gain discriminative knowledge',
+                english: 'By practicing samyama on the moment and its succession, discriminative knowledge is gained',
+                red: 'Through Saṁyama (saṁyamāt) on moment (kṣaṇa) (and) its (tad) sequence or succession --i.e. krama-- (kramayoḥ), a knowledge (jñānam) which arises (jam) from (that) discernment or discrimination (viveka) (is acquired)'
+                },
+    {
+                verse: '3.53',
+                original: 'जातिलक्षणदेशैरन्यतानवच्छेदात्तुल्ययोस्ततः प्रतिपत्तिः',
+                sanskritSimplified: 'जातिलक्षणदेशैरन्यतानवच्छेदात्तुल्ययोस्ततः (jātilakṣaṇadeśairanyatānavacchedāttulyayostataḥ) + प्रतिपत्तिः (pratipattiḥ)',
+                chitta: 'From this discriminative knowledge, I recognize the distinction between similar objects that are not distinguished by class, characteristic, or position',
+                english: 'From this discriminative knowledge, the distinction between similar objects that are not distinguished by class, characteristic, or position is recognized',
+                red: 'Through that (knowledge) (tatah), there is clear perception (of the difference) (pratipattiḥ) between two things looking alike (tulyayoḥ) since difference (anyatā) is indiscernible (anavacchedāt) by means of class or species (jāti), temporal character (lakṣaṇa) (and) position --i.e. deśa-- (deśaiḥ)'
+                },
+    {
+                verse: '3.54',
+                original: 'तारकं सर्वविषयं सर्वथाविषयमक्रमं चेति विवेकजं ज्ञानम्',
+                sanskritSimplified: 'तारकं (tārakaṁ) + सर्वविषयं (sarvaviṣayaṁ) + सर्वथा (sarvathā) + विषयम् (viṣayam) + अक्रमं (akramam) + च (ca) + इति (iti) + विवेकजं (vivekajaṁ) + ज्ञानम् (jñānam)',
+                chitta: 'My discriminative knowledge is transcendent, all-pervasive, and beyond sequence',
+                english: 'Discriminative knowledge is transcendent, all-pervasive, and beyond sequence',
+                red: 'Knowledge (jñānam) which arises (jam) from discernment or discrimination (viveka) is ""Tāraka or intuitive knowledge (tārakam). (It is) comprehensive of all (sarva) things (viṣayam) appearing (viṣayam) at all times (sarvathā) and (ca) has no sequence (akramam... iti)'
+                },
+    {
+                verse: '3.55',
+                original: 'सत्त्वपुरुषयोः शुद्धिसाम्ये कैवल्यमिति',
+                sanskritSimplified: 'सत्त्वपुरुषयोः (sattva-puruṣayoḥ) + शुद्धि (śuddhi) + साम्ये (sāmye) + कैवल्यम् (kaivalyam) + इति (iti)',
+                chitta: 'When the purity of the intellect and the purusha are equal, I attain absolute freedom',
+                english: 'When the purity of the intellect and the purusha are equal, absolute freedom is attained',
+                red: 'When there is equality (sāmye) of purity (śuddhi) between Buddhisattva --i.e. sattvic Buddhi-- (sattva) (and) Puruṣa (puruṣayoḥ), ""the state of complete Emancipation"" (kaivalyam iti) (dawns)'
+                },
+        
+                // Add sutras for Chapter 3 here
+                ],
+                4: [
+                {
+			verse: '4.1',
+			original: 'जन्मौषधिमन्त्रतपःसमाधिजाः सिद्धयः',
+			sanskritSimplified: 'जन्म (janma) + औषधि (auṣadhi) + मन्त्र (mantra) + तपः (tapaḥ) + समाधिजाः (samādhijāḥ) + सिद्धयः (siddhayaḥ)',
+			chitta: 'My supernatural powers (siddhayaḥ) arise from my birth (janma), or they are achieved through the use of herbs (auṣadhi), mantras (mantra), austerities (tapas), or through my perfect concentration (samādhi)',
+			english: 'Perfections are attained through birth, herbs, mantras, austerity, and samadhi',
+			red: 'The Siddhi-s or Supernatural Powers (siddhayaḥ) come (jāḥ) with birth (janma), (or they are achieved by means of) herbs (auṣadhi), mantra-s (mantra), austerities (tapas) (or) perfect concentration (samādhi)'
+			},
+{
+			verse: '4.2',
+			original: 'जात्यन्तरपरिणामः प्रकृत्यापूरात्',
+			sanskritSimplified: 'जात्यन्तर (jātyantara) + परिणामः (pariṇāmaḥ) + प्रकृत्या (prakṛtyā) + अपूरात् (apūrāt)',
+			chitta: 'I transform into other species (jāti) through the filling in of my essential nature (prakṛti)',
+			english: 'Transformation into another kind (species) is brought about by the filling in of nature',
+			red: 'The transformation (pariṇāmaḥ) into other (antara) species (jāti) (is accomplished) through the filling in (āpūrāt) of their essential nature (prakṛti)'
+			},
+{
+			verse: '4.3',
+			original: 'निमित्तमप्रयोजकं प्रकृतीनां वरणभेदस्तु ततः क्षेत्रिकवत्',
+			sanskritSimplified: 'निमित्तम् (nimittam) + अप्रयोजकं (aprayojakaṁ) + प्रकृतीनां (prakṛtīnāṁ) + वरणभेदः (varaṇabhedaḥ) + तु (tu) + ततः (tataḥ) + क्षेत्रिकवत् (kṣetrikavat)',
+			chitta: 'The causes (nimittam) do not set my essential nature (prakṛtīnāṁ) into motion, but they break down the barriers (varaṇa) within me, just as a farmer removes the mounds so that water can flow freely into his field',
+			english: 'The incidental cause does not directly induce transformations; it only removes the obstacles, like a farmer irrigating his field',
+			red: 'Cause (nimittam) (does not set) the essential natures (prakṛtīnām) into motion (aprayojakam) but (tu) it breaks down (bhedaḥ) the barrier (or mound) (varaṇa). For that reason (tatah), it is like (vat) the farmer (kṣetrika) (who breaks down a barrier or mound so that the water may flow into his field)'
+			},
+{
+			verse: '4.4',
+			original: 'निर्माणचित्तान्यस्मितामात्रात्',
+			sanskritSimplified: 'निर्माणचित्तानि (nirmāṇacittāni) + अस्मितामात्रात् (asmitāmātrāt)',
+			chitta: 'My created minds (nirmāṇacittāni) are produced from the pure sense of I (asmitā)',
+			english: 'Created minds arise from the ego alone',
+			red: 'The created (nirmāṇa) minds (cittāni) are (produced) from the pure (mātrāt) I-sense (asmitā)'
+			},
+{
+			verse: '4.5',
+			original: 'प्रवृत्तिभेदे प्रयोजकं चित्तमेकमनेकेषाम्',
+			sanskritSimplified: 'प्रवृत्तिभेदे (pravṛttibhede) + प्रयोजकं (prayojakaṁ) + चित्तम् (cittam) + एकम् (ekam) + अनेकषाम् (anekeṣām)',
+			chitta: 'It is my one mind (cittam) that sets into motion the many created minds (anekeṣām) during their various activities (pravṛtti)',
+			english: 'One mind is the driving force behind different activities in many minds',
+			red: '(Only) one (ekam) mind (cittam) (sets) the many (created minds) (anekeṣām) into motion (prayojakam) during their various (bhede) activities (pravṛtti)'
+			},
+{
+			verse: '4.6',
+			original: 'तत्र ध्यानजमनाशयम्',
+			sanskritSimplified: 'तत्र (tatra) + ध्यानजम् (dhyānajam) + अनाशयम् (anāśayam)',
+			chitta: 'Among these created minds (tatra), those brought about through meditation (dhyānajam) are without any latent impressions (anāśayam)',
+			english: 'There, the mind born of meditation is free from impressions',
+			red: 'Of these (created minds) (tatra), (those) brought about (jam) through meditation (dhyāna) are without any (an) latent impressions (āśayam)'
+			},
+{
+			verse: '4.7',
+			original: 'कर्माशुक्लाकृष्णं योगिनस्त्रिविधमितरेषाम्',
+			sanskritSimplified: 'कर्म (karma) + अशुक्ल (aśukla) + अकृष्णं (akṛṣṇaṁ) + योगिनः (yoginaḥ) + त्रिविधम् (trividham) + इतरेषाम् (itareṣām)',
+			chitta: 'My actions (karma), as a Yogī (yoginaḥ), are neither white (aśukla) nor black (akṛṣṇaṁ), while the actions of others are of three kinds (trividham)',
+			english: 'For a yogi, actions are neither white nor black, while for others they are of three kinds',
+			red: 'The action (karma) of a Yogī (yoginaḥ) is neither white (aśukla) nor black (akṛṣṇam), (while) those of others (itareṣām) are of three kinds (trividham)'
+			},
+{
+			verse: '4.8',
+			original: 'ततस्तद्विपाकानुगुणानामेवाभिव्यक्तिर्वासनानाम्',
+			sanskritSimplified: 'ततः (tataḥ) + तद्विपाक (tadvipāka) + अनुगुणानाम् (anuguṇānām) + एव (eva) + अभिव्यक्तिः (abhivyaktiḥ) + वासनानाम् (vāsanānām)',
+			chitta: 'From my actions, the results manifest (abhivyaktiḥ) according to the nature of the actions (vipāka), and my Vāsanā-s (vāsanānām) arise in accordance with those results',
+			english: 'From that, the manifestation of the tendencies that are in accordance with the ripening of karma occurs',
+			red: 'From that --i.e. from those three aforesaid kinds of action-- (tatah), (there is) certainly (eva) manifestation (abhivyaktiḥ) of Vāsanā-s1 (vāsanānām) suitable --anuguṇa-- (anuguṇānām) to the consequences or results (vipāka) of that --i.e. of the three abovementioned types of action-- (tad)'
+			},
+{
+			verse: '4.9',
+			original: 'जातिदेशकालव्यवहितानामप्यानन्तर्यं स्मृतिसंस्कारयोरेकरूपत्वात्',
+			sanskritSimplified: 'जाति (jāti) + देश (deśa) + काल (kāla) + व्यवहितानाम् (vyavahitānām) + अपि (api) + अनन्तर्यम् (anantaryam) + स्मृतिसंस्कारयोः (smṛtisaṁskārayoḥ) + एकरूपत्वात् (ekarūpatvāt)',
+			chitta: 'Even if I experience different births, places, or times, my memories and impressions are continuous because they share a unified nature',
+			english: 'The continuity of memories and latent impressions persists, even if they are separated by differences in birth, place, or time, because they share a common essence',
+			red: 'Because of similarity (ekarūpatvāt) between memory (smṛti) (and) latent impressions --saṁskāra-- (saṁskārayoḥ), (there is) immediate (ānantaryam) (emergence of Vāsanā-s) even though (api) separated --vyavahita-- (vyavahitānām) by birth (jāti), space or position (deśa) (and) time (kāla)'
+			},
+{
+			verse: '4.10',
+			original: 'तासामनादित्वं चाशिषो नित्यत्वात्',
+			sanskritSimplified: 'तासाम् (tāsām) + अनादित्वम् (anāditvam) + च (ca) + आशिषः (āśiṣaḥ) + नित्यत्वात् (nityatvāt)',
+			chitta: 'My impressions have existed eternally, just as my fundamental desire for existence is eternal',
+			english: 'These latent impressions have no beginning and are eternal because the desire for self-preservation is eternal',
+			red: 'Seeing that the desire for self-welfare --āśīs-- (āśiṣaḥ) is eternal --nitya-- (nityatvāt), those (Vāsanā-s) --tās-- (tāsām) (from which it emerges are) also (ca) beginningless (anāditvam)'
+			},
+{
+			verse: '4.11',
+			original: 'हेतुफलाश्रयालम्बनैः सङ्गृहीतत्वादेषामभावे तदभावः',
+			sanskritSimplified: 'हेतु (hetu) + फल (phala) + आश्रय (āśraya) + आलम्बनैः (ālambanaiḥ) + सङ्गृहीतत्वात् (saṅgṛhītatvāt) + एषाम् (eṣām) + अभावे (abhāve) + तत् (tat) + अभावः (abhāvaḥ)',
+			chitta: 'When I remove the cause, effect, foundation, and support of my impressions, they will no longer exist',
+			english: 'These (impressions) are held together by cause, effect, support, and object; when these are absent, the impressions are absent',
+			red: 'Since (Vāsanā) is held together (saṅgṛhītatvāt) by cause (hetu), fruit or result (phala), refuge (āśraya) (and) support --i.e. ""ālambana"" or the supporting object which attracts Vāsanā-- (ālambanaiḥ), in the absence (abhāve) of these --i.e. cause, fruit or result, refuge and support-- (eṣām), (there is also) absence (abhāvaḥ) of that (Vāsanā) (tad)'
+			},
+{
+			verse: '4.12',
+			original: 'अतीतानागतं स्वरूपतोऽस्त्यध्वभेदाद्धर्माणाम्',
+			sanskritSimplified: 'अतीत (atīta) + अनागतं (anāgatam) + स्वरूपतः (svarūpataḥ) + अस्ति (asti) + अध्वभेदात् (adhvabhedāt) + धर्माणाम् (dharmāṇām)',
+			chitta: 'My past and future exist as real as the present, and the difference between them lies only in the path my qualities take',
+			english: 'The past and future exist in their true form; the difference is due to the path taken by the qualities',
+			red: 'Past (atīta) (and) future (anāgatam) exist (asti) in their essential forms (sva-rūpataḥ). (The difference is only) in the characteristics (of the forms) (dharmāṇām) at different (bhedāt) times or phases --i.e. past, present and future-- (adhva)'
+			},
+{
+			verse: '4.13',
+			original: 'ते व्यक्तसूक्ष्मा गुणात्मानः',
+			sanskritSimplified: 'ते (te) + व्यक्त (vyakta) + सूक्ष्माः (sūkṣmāḥ) + गुणात्मानः (guṇātmānaḥ)',
+			chitta: 'The qualities within me manifest in gross, subtle, and primal forms',
+			english: 'These qualities (guṇas) manifest as the gross, subtle, and primal states',
+			red: 'Those (characteristics) (te) are manifest (vyakta) (and) subtle --sūkṣma-- (sūkṣmāḥ) (and) consist (ātmānaḥ) of the (three) Guṇa-s (guṇa)'
+			},
+{
+			verse: '4.14',
+			original: 'परिणामैकत्वाद्वस्तुतत्त्वम्',
+			sanskritSimplified: 'परिणाम (pariṇāma) + एकत्वात् (ekatvāt) + वस्तु (vastu) + तत्त्वम् (tattvam)',
+			chitta: 'The essence of objects around me remains the same because their transformation is uniform',
+			english: 'The object exists as a single reality due to the uniformity of transformation',
+			red: 'Due to the coordinated or coincidental (ekatvāt) mutation (of the three Guṇa-s) (pariṇāma), an object (vastu) appears to be something real (tattvam)'
+			},
+{
+			verse: '4.15',
+			original: 'वस्तुसाम्ये चित्तभेदात्तयोर्विभक्तः पन्थाः',
+			sanskritSimplified: 'वस्तु (vastu) + साम्ये (sāmye) + चित्त (citta) + भेदात् (bhedāt) + तयोः (tayoḥ) + विभक्तः (vibhaktaḥ) + पन्थाः (panthāḥ)',
+			chitta: 'When I perceive objects, my understanding may differ from others because our perceptions are not the same, even if the objects are identical',
+			english: 'Although the object is the same, it appears differently to different minds',
+			red: 'Despite sameness (sāmye) of objects (vastu), there is a different (vibhaktaḥ) way or path (panthāḥ) to them both --i.e. object and its inherent knowledge-- (tayoḥ) since there are different (bhedāt) minds (citta)'
+			},
+{
+			verse: '4.16',
+			original: 'न चैकचित्ततन्त्रं वस्तु तदप्रमाणकं तदा किं स्यात्',
+			sanskritSimplified: 'न (na) + च (ca) + एक (eka) + चित्ततन्त्रं (cittatantram) + वस्तु (vastu) + तत् (tat) + प्रमाणकम् (pramāṇakam) + तदा (tadā) + किं (kiṁ) + स्यात् (syāt)',
+			chitta: 'An object does not rely solely on my perception; if it did, what would happen if I failed to perceive it?',
+			english: 'An object is not dependent on just one mind, otherwise, what would happen if that mind does not perceive it?',
+			red: 'The object (vastu) certainly (ca) is not (na) dependent (tantram) on only one (eka) mind (citta), (because if so,) what (kim) would happen (syāt) when (the object) is not experienced or cognized (apramāṇakam) by that (mind) (tad) then (tadā)?'
+			},
+{
+			verse: '4.17',
+			original: 'तदुपरागापेक्षित्वाच्चित्तस्य वस्तु ज्ञाताज्ञातम्',
+			sanskritSimplified: 'तत् (tat) + उपराग (uparāga) + अपेक्षित्वात् (apekṣitvāt) + चित्तस्य (cittasya) + वस्तु (vastu) + ज्ञात (jñāta) + अज्ञातम् (ajñātam)',
+			chitta: 'I recognize or fail to recognize objects based on how my mind interacts with them',
+			english: 'An object is known or unknown depending on whether or not it is colored by the mind',
+			red: 'The object (vastu) is known (jñāta) (or) unknown (ajñātam) to the mind (cittasya) according to how (apekṣitvāt) it colors (uparāga) that (very mind) (tad)'
+			},
+{
+			verse: '4.18',
+			original: 'सदा ज्ञाताश्चित्तवृत्तयस्तत्प्रभोः पुरुषस्यापरिणामित्वात्',
+			sanskritSimplified: 'सदा (sadā) + ज्ञाताः (jñātāḥ) + चित्तवृत्तयः (cittavṛttayaḥ) + तत्प्रभोः (tatprabhoḥ) + पुरुषस्य (puruṣasya) + अपरिणामित्वात् (apariṇāmitvāt)',
+			chitta: 'My thoughts and activities are always known to my inner Seer, who remains unchanging',
+			english: 'The activities of the mind are always known to the Seer (puruṣa) because the Seer is unchanging',
+			red: 'To the Lord or Master --i.e. Puruṣa-- (prabhoḥ) of that --i.e. of mind-- (tad), the mental (citta) modifications (vṛttayaḥ) (are) always (sadā) known (jñātāḥ) because of the immutability (apariṇāmitvāt) of (that very) Puruṣa (puruṣasya)'
+			},
+{
+			verse: '4.19',
+			original: 'न तत्स्वाभासं दृश्यत्वात्',
+			sanskritSimplified: ' न (na) + तत् (tat) + स्वाभासम् (svābhāsam) + दृश्यत्वात् (dṛśyatvāt)',
+			chitta: 'I am not self-illuminating because I am an object that can be perceived',
+			english: 'The mind itself is not self-illuminating because it is an object of perception',
+			red: 'That (mind) (tad) is not (na) self-illuminating (sva-ābhāsam) since it is a knowable object (dṛśyatvāt)'
+			},
+{
+			verse: '4.20',
+			original: 'एकसमये चोभयानवधारणम्',
+			sanskritSimplified: 'एकसमये (ekasamaye) + च (ca) + उभय (ubhaya) + अनवधारणम् (anavadhāraṇam)',
+			chitta: 'I cannot focus on two things at once',
+			english: 'The mind cannot perceive two things simultaneously',
+			red: 'And (ca) there is no cognizance (anavadhāraṇam) of them both --i.e. mind and knowable objects-- (ubhaya) simultaneously (ekasamaye)'
+			},
+{
+			verse: '4.21',
+			original: ' चित्तान्तरदृश्ये बुद्धिबुद्धेरतिप्रसङ्गः स्मृतिसङ्करश्च',
+			sanskritSimplified: 'चित्त (citta) + अन्तर (antara) + दृश्ये (dṛśye) + बुद्धि (buddhi) + बुद्धेः (buddheḥ) + अतिप्रसङ्गः (atiprasaṅgaḥ) + स्मृति (smṛti) + सङ्करः (saṅkaraḥ) + च (ca)',
+			chitta: 'If I could perceive another mind directly, it would lead to confusion between our intellects and cause a mix-up of memories',
+			english: 'If one mind were to perceive another mind, there would be confusion between the intellects and a mix-up of memories',
+			red: '(If ones own mind were to be) a knowable object (dṛśye) to another (antara) mind (citta), (then there would be) a undue extension (atiprasaṅgaḥ) of Buddhi(s) (buddheḥ) of Buddhi-s (buddhi) and (ca) intermixture (saṅkaraḥ) of memories (smṛti)'
+			},
+{
+			verse: '4.22',
+			original: 'चितेरप्रतिसङ्क्रमायास्तदाकारापत्तौ स्वबुद्धिसंवेदनम्',
+			sanskritSimplified: 'चितेः (citeḥ) + अप्रतिसङ्क्रमायाः (apratisaṅkramāyāḥ) + तत् (tad) + आकारापत्तौ (ākārāpattau) + स्वबुद्धि (svabuddhi) + संवेदनम् (saṁvedanam)',
+			chitta: 'When I remain steady and take on the form of the object I perceive, I become aware of my own intellect',
+			english: 'The minds awareness of its own intellect arises when the mind does not move from one state to another and takes on the form of the object',
+			red: 'When Citi or Consciousness (citeḥ), though untransmissible--apratisaṅkramā-- (apratisaṅkramāyāḥ), takes on --āpatti-- (āpattau) the form (ākāra) of that --i.e. of Buddhi-- (tad), (it becomes) the consciousness or intelligence (saṁvedanam) of ones own (sva) Buddhi (buddhi)'
+			},
+{
+			verse: '4.23',
+			original: 'द्रष्टृदृश्योपरक्तं चित्तं सर्वार्थम्',
+			sanskritSimplified: 'द्रष्टृ (draṣṭṛ) + दृश्य (dṛśya) + उपरक्तं (uparaktaṁ) + चित्तं (cittaṁ) + सर्वार्थम् (sarvārtham)',
+			chitta: 'When I am colored by both my observer and what I observe,  all perceptions are available to me',
+			english: 'The mind, when colored by both the Seer and the seen, is all-encompassing',
+			red: 'Mind (cittam), being affected (uparaktam) by (both) the seer (draṣṭṛ) and the seen (dṛśya), (is) all-comprehensive (sarva-artham)'
+			},
+{
+			verse: '4.24',
+			original: 'तदसङ्ख्येयवासनाभिश्चित्रमपि परार्थं संहत्यकारित्वात्',
+			sanskritSimplified: 'तत् (tat) + असङ्ख्येय (asaṅkhyeya) + वासनाभिः (vāsanābhiḥ) + चित्रम् (citram) + अपि (api) + परार्थं (parārthaṁ) + संहत्य (saṁhatya) + कारित्वात् (kāritvāt)',
+			chitta: 'Though I am intricate due to countless impressions, I ultimately function for another purpose, for the Seer within me',
+			english: 'Although the mind is complex due to countless latent impressions, it functions for the purpose of another (the Seer) because it operates in association with the body and senses',
+			red: 'That (mind) (tad), although (api) variegated (citram) by innumerable (asaṅkhyeya) Vāsanā-s --i.e. latencies resulting from feelings, not actions-- (vāsanābhiḥ), (exists) for (artham) another --i.e. Puruṣa-- (para) inasmuch as (its constituents) act (kāritvāt) conjointly (saṁhatya)'
+			},
+{
+			verse: '4.25',
+			original: 'विशेषदर्शिन आत्मभावभावनाविनिवृत्तिः',
+			sanskritSimplified: 'विशेषदर्शिन (viśeṣadarśinaḥ) + आत्मभाव (ātmabhāva) + भावना (bhāvanā) + विनिवृत्तिः (vinivṛttiḥ)',
+			chitta: 'When I see the distinction between the Seer and myself, my inclination towards self-identity vanishes',
+			english: 'For one who has seen the distinction, the belief in the mind as the self ceases',
+			red: 'To one who knows (darśinaḥ) the special distinction (viśeṣa) --i.e. to one who has realized Puruṣa or the Self--, there is cessation (vinivṛttiḥ) of the practice of pondering (bhāvanā) over the nature (bhāva) of his (own) Self (ātma)'
+			},
+{
+			verse: '4.26',
+			original: 'तदा विवेकनिम्नङ्कैवल्यप्राग्भारञ्चित्तम्',
+			sanskritSimplified: 'तदा (tadā) + विवेक (viveka) + निम्न (nimna) + कैवल्य (kaivalya) + प्राग्भारम् (prāgbhāraṁ) + चित्तम् (cittam)',
+			chitta: 'At that moment, I am inclined towards true discernment, and I naturally gravitate towards liberation',
+			english: 'Then the mind is inclined towards discriminative discernment and gravitates towards liberation',
+			red: 'Then (tadā), the mind (cittam) inclines (nimnam) toward discriminative (knowledge) (viveka) (and) is directed (prāk-bhāram) toward complete Liberation (kaivalya)'
+			},
+{
+			verse: '4.27',
+			original: 'तच्छिद्रेषु प्रत्ययान्तराणि संस्कारेभ्यः',
+			sanskritSimplified: 'तत् (tat) + छिद्रेषु (chidreṣu) + प्रत्यय (pratyaya) + अन्तरा (antarā) + णि (ṇi) + संस्कारेभ्यः (saṁskārebhyaḥ)',
+			chitta: 'When there are gaps in my flow of true knowledge, other thoughts emerge from my latent impressions',
+			english: 'When there are gaps (in the flow of discriminative knowledge), other thoughts arise from latent impressions',
+			red: 'In the holes --i.e. in the breaches-- (chidreṣu) of that (discriminative knowledge) (tad), other (antarāṇi) mental modifications (pratyaya) (emerge) because of (residual) latencies (saṁskārebhyaḥ)'
+			},
+{
+			verse: '4.28',
+			original: ' हानमेषां क्लेशवदुक्तम्',
+			sanskritSimplified: 'हानम् (hānam) + एषाम् (eṣām) + क्लेशवत् (kleśavat) + उक्तम् (uktam)',
+			chitta: 'Eliminating these emerging thoughts is akin to removing my afflictions',
+			english: 'The removal of these (emerging thoughts) is said to be like the removal of afflictions',
+			red: 'It is said (uktam) (that) the removal (hānam) of these --i.e. of the mental modifications mentioned in the previous aphorism-- (eṣām) is as (vat) (that of) the Kleśa-s or Afflictions (kleśa)'
+			},
+{
+			verse: '4.29',
+			original: 'प्रसङ्ख्यानेऽप्यकुसीदस्य सर्वथा विवेकख्यातेर्धर्ममेघः समाधिः',
+			sanskritSimplified: 'प्रसङ्ख्याने (prasaṅkhyāne) + अपि (api) + अकुसीदस्य (akūsīdasya) + सर्वथा (sarvathā) + विवेकख्यातेः (vivekakhyāteḥ) + धर्ममेघः (dharmameghaḥ) + समाधिः (samādhiḥ)',
+			chitta: 'When I am disinterested even in the highest knowledge and have achieved true discernment in all ways, I attain the cloud of virtues in samādhi',
+			english: 'For one who is uninterested even in the highest knowledge, who has reached discriminative discernment in every way, there arises the cloud of virtues (dharmamegha samādhi)',
+			red: 'One who, having attained discriminative (viveka) knowledge (khyāteḥ) in the highest degree and at all times (sarvathā), does not take an interest (akusīdasya) even (api) in (that) omniscience resulting from ""Vivekajaṁ jñānam"" or ""Knowledge arising from discernment"" --See III 54-- (prasaṅkhyāne), (experiences a type of) Samādhi or Perfect Concentration (samādhiḥ) (known as) Dharmamegha --i.e. Cloud of Virtue-- (dharma-meghaḥ)'
+			},
+{
+			verse: '4.30',
+			original: 'ततः क्लेशकर्मनिवृत्तिः',
+			sanskritSimplified: 'ततः (tataḥ) + क्लेश (kleśa) + कर्म (karma) + निवृत्तिः (nivṛttiḥ)',
+			chitta: 'At that point, my afflictions and actions cease',
+			english: 'From that arises the cessation of the afflictions and actions',
+			red: 'From that --i.e. from Dharmamegha-- (tatah), there is cessation (nivṛttiḥ) of Afflictions (kleśa) (and) actions (karma)'
+			},
+{
+			verse: '4.31',
+			original: 'तदा सर्वावरणमलापेतस्य ज्ञानस्यानन्त्याज्ज्ञेयमल्पम्',
+			sanskritSimplified: 'तदा (tadā) + सर्व (sarva) + आवरण (āvaraṇa) + मल (mala) + अपेतस्य (apetasya) + ज्ञानस्य (jñānasya) + अनन्त्य (anantya) + ज्ज्ञेयम् (jñeyam) + अल्पम् (alpam)',
+			chitta: 'When all veils of impurity are removed from my knowledge, only a little remains to be known',
+			english: 'Then, when the impurities that veil knowledge are removed, only a small portion of what is to be known remains',
+			red: 'Then (tadā), due to the infinity (ānantyāt) of knowledge (jñānasya) free --apeta-- (apetasya) from all (sarva) veiling (āvaraṇa) impurities (mala), the knowable(s) (jñeyam) (appear to be) few (alpam)'
+			},
+{
+			verse: '4.32',
+			original: 'ततः कृतार्थानां परिणामक्रमसमाप्तिर्गुणानाम्',
+			sanskritSimplified: 'ततः (tataḥ) + कृतार्थानाम् (kṛtārthānām) + परिणाम (pariṇāma) + क्रम (krama) + समाप्तिः (samāptiḥ) + गुणानाम् (guṇānām)',
+			chitta: 'At that moment, the sequence of changes in my guṇas ends, as they have served their purpose',
+			english: 'Then, the purpose of the gunas, having served their purpose, comes to an end',
+			red: 'From that (Dharmamegha or Cloud of Virtue) (tatah), when the Guṇa-s --i.e. ""qualities of Prakṛti""-- (guṇānām) have accomplished their purpose (kṛta-arthānām), there is cessation (samāptiḥ) of the mutative (pariṇāma) sequence (krama) (of those very Guṇa-s)'
+			},
+{
+			verse: '4.33',
+			original: 'क्षणप्रतियोगी परिणामापरान्तनिर्ग्राह्यः क्रमः',
+			sanskritSimplified: 'क्षण (kṣaṇa) + प्रतियोगी (pratiyogī) + परिणाम (pariṇāma) + अपरान्त (aparānta) + निर्ग्राह्यः (nirgrāhyaḥ) + क्रमः (kramaḥ)',
+			chitta: 'I perceive the sequence of transformations in the final moment, corresponding to each passing moment',
+			english: 'The sequence (of transformations) is perceived at the final moment, as it corresponds with each moment',
+			red: 'Sequence (kramaḥ) is correlated (pratiyogī) to the moments (kṣaṇa) (and) is perceivable or noticeable (nirgrāhyaḥ) on the termination (aparānta) of the mutations (pariṇāma)'
+			},
+{
+			verse: '4.34',
+			original: 'पुरुषार्थशून्यानां गुणानां प्रतिप्रसवः कैवल्यं स्वरूपप्रतिष्ठा वा चितिशक्तिरिति',
+			sanskritSimplified: 'पुरुषार्थ (puruṣārtha) + शून्यानां (śūnyānāṁ) + गुणानां (guṇānāṁ) + प्रतिप्रसवः (pratiprasavaḥ) + कैवल्यं (kaivalyaṁ) + स्वरूप (svarūpa) + प्रतिष्ठा (pratiṣṭhā) + वा (vā) + चितिशक्तिः (citiśaktiḥ) + इति (iti)',
+			chitta: 'When the guṇas that no longer serve any purpose for me dissolve, I achieve kaivalya, where I am established in my true nature or in the pure power of consciousness itself',
+			english: 'The dissolution of the guṇas, which are devoid of purpose for the puruṣa, is known as kaivalya, or the establishment in ones own essential nature, or the power of consciousness itself',
+			red: 'Complete Liberation (kaivalyam) or (vā) the Power (śaktiḥ) of Consciousness (citi) established (pratiṣṭhā) in her own nature (sva-rūpa) (occurs when) the Guṇa-s --i.e. ""qualities of Prakṛti""-- (guṇānām) return to their original source --i.e. Prakṛti-- (pratiprasavaḥ), as they have no (further) purpose to fulfill (artha-śūnyānām) for Puruṣa (puruṣa) --final ""iti"" indicates the end of this scripture'
+			},
+
+                // Add sutras for Chapter 4 here
+                ]
+            };
+    
+            let currentChapter = 1;
+            let currentSutraIndex = 0;
+
+            function updateSutraList(chapter) {
+                const sutraList = document.getElementById(`sutra-list-${chapter}`);
+                sutraList.innerHTML = ''; // Clear previous options
+
+                sutras[chapter].forEach((sutra, index) => {
+                    const sutraItem = document.createElement('div');
+                    sutraItem.className = 'sutra-item';
+
+                    // Display up to 29 characters followed by ".." if the length exceeds 29 characters
+                    const sutraText = sutra.original.length > 29? `${sutra.original.substring(0, 29)}..` : sutra.original;
+
+                    sutraItem.textContent = `${sutra.verse}: ${sutraText}`;
+                    sutraItem.onclick = () => {
+                        currentChapter = chapter;
+                        currentSutraIndex = index;
+                        displaySutra(chapter, index);
+                    };
+                    sutraList.appendChild(sutraItem);
+                });
+
+                // Display the first sutra of the selected chapter by default
+                if (sutras[chapter].length > 0) {
+                    displaySutra(chapter, 0);
+                }
+            }
+
+            function displaySutra(chapter, index) {
+                const sutra = sutras[chapter][index];
+                
+                // Display only the verse number
+                document.getElementById('sutra-verse').textContent = `${sutra.verse}`;
+
+                // Display the original text and other properties
+                document.getElementById('sutra-original').textContent = sutra.original;
+                document.getElementById('sutra-sanskrit-simplified').textContent = sutra.sanskritSimplified;
+                document.getElementById('sutra-chitta').textContent = sutra.chitta;
+                document.getElementById('sutra-english').textContent = sutra.english;
+                document.getElementById('sutra-red').textContent = sutra.red;
+
+                // Highlight the selected sutra
+                const sutraItems = document.querySelectorAll(`#sutra-list-${chapter} .sutra-item`);
+                sutraItems.forEach(item => item.classList.remove('selected'));
+                sutraItems[index].classList.add('selected');
+            }
+            function navigateSutra(direction) {
+                if (direction === 'next') {
+                    if (currentSutraIndex < sutras[currentChapter].length - 1) {
+                        currentSutraIndex++;
+                    } else if (currentChapter < Object.keys(sutras).length) {
+                        currentChapter++;
+                        currentSutraIndex = 0;
+                    }
+                } else if (direction === 'prev') {
+                    if (currentSutraIndex > 0) {
+                        currentSutraIndex--;
+                    } else if (currentChapter > 1) {
+                        currentChapter--;
+                        currentSutraIndex = sutras[currentChapter].length - 1;
+                    }
+                }
+                displaySutra(currentChapter, currentSutraIndex);
+                updateNavigationButtons();
+            }
+
+            function navigateChapter(direction) {
+                if (direction === 'next' && currentChapter < Object.keys(sutras).length) {
+                    currentChapter++;
+                    currentSutraIndex = 0;
+                } else if (direction === 'prev' && currentChapter > 1) {
+                    currentChapter--;
+                    currentSutraIndex = 0;
+                }
+                updateSutraList(currentChapter);
+                displaySutra(currentChapter, currentSutraIndex);
+                updateNavigationButtons();
+            }
+
+            function updateNavigationButtons() {
+                document.getElementById('prev-sutra').disabled = (currentChapter === 1 && currentSutraIndex === 0);
+                document.getElementById('next-sutra').disabled = (currentChapter === Object.keys(sutras).length && currentSutraIndex === sutras[currentChapter].length - 1);
+                document.getElementById('prev-chapter').disabled = (currentChapter === 1);
+                document.getElementById('next-chapter').disabled = (currentChapter === Object.keys(sutras).length);
+            }
+
+            function toggleChapter(chapter) {
+                const sutraList = document.getElementById(`sutra-list-${chapter}`);
+                const isCurrentlyVisible = sutraList.style.display === "block";
+
+                // Hide all other sutra lists
+                const allSutraLists = document.querySelectorAll('.scrollable-list');
+                allSutraLists.forEach(list => list.style.display = 'none');
+
+                // Toggle the clicked chapter's sutra list
+                if (!isCurrentlyVisible) {
+                    sutraList.style.display = "block";
+                }
+            }
+
+            // Add an event listener to collapse all accordions when clicking outside
+            document.addEventListener('click', function(event) {
+                const accordions = document.querySelectorAll('.chapter-container');
+                let clickedInsideAccordion = false;
+
+                // Check if the click occurred inside an accordion
+                accordions.forEach(accordion => {
+                    if (accordion.contains(event.target)) {
+                        clickedInsideAccordion = true;
+                    }
+                });
+
+                // If the click was outside all accordions, collapse all
+                if (!clickedInsideAccordion) {
+                    const allSutraLists = document.querySelectorAll('.scrollable-list');
+                    allSutraLists.forEach(list => list.style.display = 'none');
+                }
+            });
+
+
+
+            // Initialize all chapters with their sutras
+            Object.keys(sutras).forEach(chapter => updateSutraList(chapter));
+
+            // Display the first sutra of the first chapter on page load
+            currentChapter = 1;  // Set to the first chapter
+            currentSutraIndex = 0;  // Set to the first sutra
+            displaySutra(currentChapter, currentSutraIndex);  // Display the first sutra on page load
+            updateNavigationButtons();  // Update navigation buttons accordingly
+
+         </script>
+    </body>
+    </html>
+    </code>
