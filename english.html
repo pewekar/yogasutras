@@ -90,14 +90,6 @@
                 width: 100%;
             }
 
-            .sutra-row.even {
-                background-color: #e6f7ff; /* Light blue for even rows */
-            }
-
-            .sutra-row.odd {
-                background-color: #f9f9f9; /* Light grey for odd rows */
-            }
-
             .navigation-buttons {
                 display: flex;
                 justify-content: space-between;
@@ -125,6 +117,20 @@
                 background-color: #eee;
                 cursor: not-allowed;
             }
+
+            .row-blue {
+                background-color: #e6f7ff; /* Light blue */
+            }
+
+            .row-grey {
+                background-color: #f9f9f9; /* Light grey */
+            }
+            
+            #sutra-english {
+                display: none;
+            }
+
+
             /* Mobile-specific adjustments */
 
             /* Show the accordion on larger screens */
@@ -198,10 +204,10 @@
         
             <!-- Other sutra details with alternate row shading -->
             <div class="sutra-details">
-                <p class="sutra-row even" id="sutra-sanskrit-simplified"></p>
-                <p class="sutra-row odd" id="sutra-chitta"></p>
-                <p class="sutra-row even" id="sutra-english"></p>
-                <p class="sutra-row odd" id="sutra-red"></p>
+                <p class="sutra-row row-blue" id="sutra-sanskrit-simplified"></p>
+                <p class="sutra-row row-grey" id="sutra-chitta"></p>
+                <p class="sutra-row row-blue" id="sutra-red"></p>
+                <p class="sutra-row row-grey" id="sutra-english"></p>         
             </div>
         
             <!-- Navigation Buttons -->
